@@ -1,0 +1,19 @@
+.content {
+  @include pos(a, 0 0 0 0);
+
+  .left-bar {
+    @include pos(a, 0 null 0 0);
+    width: $left-bar-width;
+    background-color: $left-bar-bg;
+  }
+
+  .editor {
+    @include pos(a, 0 $right-bar-width 0 $left-bar-width);
+  }
+
+  .right-bar {
+    @include pos(a, 0 0 0 null);
+    width: $right-bar-width;
+    background-color: $right-bar-bg;
+  }
+}

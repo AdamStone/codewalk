@@ -1,0 +1,13 @@
+@mixin fa($content-code) {
+  content: $content-code;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+/*--adjust as necessary--*/
+  font-size: inherit;
+  padding-right: 0.5em;
+  position: absolute;
+  top: -0.2em;
+  left: 0;
+}

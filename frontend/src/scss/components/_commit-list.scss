@@ -1,0 +1,19 @@
+.commit-list {
+  background-color: $commit-ul-bg;
+
+  li {
+    padding: 0.5em;
+    background-color: $commit-li-bg;
+    margin: 1px;
+    text-transform: capitalize;
+
+    &:hover {
+      background-color: $commit-li-hover-bg;
+      cursor: pointer;
+    }
+
+    &.checked-out {
+      background-color: $commit-li-checkout-bg;
+    }
+  }
+}
