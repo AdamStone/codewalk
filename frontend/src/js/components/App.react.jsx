@@ -1,11 +1,13 @@
 var React = require('react');
 
-var RepoStore = require('../stores/RepoStore');
+var RepoStore = require('../stores/RepoStore'),
+    CommitList = require('./CommitList.react.jsx');
 
 
 function getAppState() {
   return {
-    repos: RepoStore.get()
+    repos: RepoStore.get(),
+    viewing: 'xrdPlot'
   };
 };
 
@@ -26,6 +28,9 @@ module.exports = React.createClass({
   },
 
   render: function() {
+
+    var repo = this.state.repos[this.state.viewing];
+
     return (
       <div className="viewport">
         <nav className="toolbar">
@@ -34,7 +39,7 @@ module.exports = React.createClass({
         <div className="content">
 
           <div className="left-bar">
-
+            <CommitList repo={repo}/>
           </div>
 
           <div className="editor">
