@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var RepoActions = require('../actions/RepoActions');
+var RepoStore = require('../stores/RepoStore');
 
 module.exports = React.createClass({
 
@@ -25,7 +25,7 @@ module.exports = React.createClass({
         branch = repo.branches[branchName];
 
     if (branch && !branch.commits.length) {
-      RepoActions.getCommits(repo.owner,
+      RepoStore.getCommits(repo.owner,
                              repo.name,
                              branchName);
     }

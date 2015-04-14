@@ -12,11 +12,12 @@ var AppDispatcher = require('../dispatcher/AppDispatcher'),
 
 
 var _dispatchToken,
-    _data;
+    _data,
+    Repo;
 
 var _getInitialState = function() {
   return {
-    xrdPlot: {
+    'xrd-plot': {
       owner: "AdamStone",
       name: "xrd-plot",
       objs: {}, // hash-based obj store
@@ -43,6 +44,25 @@ var RepoStore = merge(EventEmitter.prototype, {
     return Utils.copy(_data);
   },
 
+  getCommits: function(owner, repo, branch) {
+    branch = typeof branch !== 'undefined' ?
+                        branch : 'master';
+
+    Repo = GitHub.getRepo(owner, repo);
+    Repo.getCommits(_data[repo].objs)
+      .then(function(commits) {
+        RepoActions.gotCommits(repo, commits, branch);
+      }).done();
+  },
+
+  getTree: function(owner, repo, sha) {
+    Repo = GitHub.getRepo(owner, repo);
+    Repo.getTree(sha, _data[repo].objs)
+      .then(function(tree) {
+        RepoActions.gotTree(repo, tree);
+      }).done();
+  },
+
   emitChange: function() {
     this.emit('change');
   },
@@ -59,53 +79,37 @@ var RepoStore = merge(EventEmitter.prototype, {
 
 
 
-_dispatchToken = AppDispatcher.register(function(payload) {
+_dispatchToken = AppDispatcher.register(
+  function(payload) {
 
-  var action = payload.action,
-      data = action.data,
-      owner = data.owner,
-      repo = data.repo,
-      branch = data.branch,
-      commits = data.commits;
-
-
-  switch(action.actionType) {
-
-    // USER ACTIONS
-
-    case Constants.Repo.GET_COMMITS:
-
-      // data: owner, repo, branch
-      var Repo = GitHub.getRepo(owner, repo);
-      Repo.getCommits(_data.xrdPlot.objs)
-        .then(function(commits) {
-          RepoActions.gotCommits(repo, commits, branch);
-        });
-      break;
+    var action = payload.action,
+        data = action.data,
+        repo = data.repo,
+        branch = data.branch,
+        commits = data.commits;
 
 
+    switch(action.actionType) {
 
-    // SERVER ACTIONS
+      case Constants.Repo.GOT_COMMITS:
 
-    case Constants.Repo.GOT_COMMITS:
-
-      // data: repo, commits, branch
-      if (!_data[repo].branches[branch]) {
-        _data[repo].branches[branch] =  {
-          commits: []
-        };
-      }
-      _data[repo].branches[branch].commits = commits;
-      break;
-
+        // data: repo, commits, branch
+        if (!_data[repo].branches[branch]) {
+          _data[repo].branches[branch] =  {
+            commits: []
+          };
+        }
+        _data[repo].branches[branch].commits = commits;
+        break;
 
 
-    default:
-      return true;
-  }
-  sessionStorage.RepoStore = JSON.stringify(_data);
-  RepoStore.emitChange();
-  return true;
-});
+      default:
+        return true;
+    }
+    console.log('emit changed');
+    sessionStorage.RepoStore = JSON.stringify(_data);
+    RepoStore.emitChange();
+    return true;
+  });
 
 module.exports = RepoStore;

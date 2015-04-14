@@ -7,7 +7,7 @@ var RepoStore = require('../stores/RepoStore'),
 function getAppState() {
   return {
     repos: RepoStore.get(),
-    viewing: 'xrdPlot'
+    viewing: 'xrd-plot'
   };
 };
 

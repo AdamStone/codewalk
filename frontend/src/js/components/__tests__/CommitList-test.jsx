@@ -1,15 +1,19 @@
 jest.dontMock('../CommitList.react.jsx');
+jest.dontMock('../../utils/mockStorage');
 
 var React, TestUtils, Component, CommitList,
-    RepoActions, repo;
+    RepoStore, mockStorage, repo;
 
 describe('CommitList', function() {
 
   beforeEach(function() {
+    mockStorage = require('../../utils/mockStorage');
+    mockStorage('sessionStorage');
+
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../CommitList.react.jsx');
-    RepoActions = require('../../actions/RepoActions');
+    RepoStore = require('../../stores/RepoStore');
 
     repo = {
       owner: "AdamStone",
@@ -44,7 +48,7 @@ describe('CommitList', function() {
 
 
 
-  it('calls GET_COMMITS action if props.repo is empty',
+  it('calls RepoStore.getCommits if props.repo is empty',
 
     function() {
 
@@ -52,15 +56,15 @@ describe('CommitList', function() {
         <Component repo={repo}/>
       );
 
-      expect(RepoActions.getCommits.mock.calls[0][0])
+      expect(RepoStore.getCommits.mock.calls[0][0])
         .toBe('AdamStone');
-      expect(RepoActions.getCommits.mock.calls[0][1])
+      expect(RepoStore.getCommits.mock.calls[0][1])
         .toBe('xrd-plot');
     });
 
 
 
-  it('calls GET_COMMITS for master branch by default',
+  it('calls getCommits for master branch by default',
 
     function() {
 
@@ -68,13 +72,13 @@ describe('CommitList', function() {
         <Component repo={repo}/>
       );
 
-      expect(RepoActions.getCommits.mock.calls[0][2])
+      expect(RepoStore.getCommits.mock.calls[0][2])
         .toBe('master');
     });
 
 
 
-  it('calls GET_COMMITS for other branch if specified',
+  it('calls getCommits for other branch if specified',
 
     function() {
 
@@ -82,7 +86,7 @@ describe('CommitList', function() {
         <Component repo={repo} branch="needsCommits"/>
       );
 
-      expect(RepoActions.getCommits.mock.calls[0][2])
+      expect(RepoStore.getCommits.mock.calls[0][2])
         .toBe('needsCommits');
     });
 
