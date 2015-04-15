@@ -67,24 +67,14 @@ module.exports = {
               ' sha': sha
             };
 
-            // first, sort:
-            //  all blobs longest-to-shortest path, then
-            //  all trees longest-to-shortest path
-            tree.sort(function(a, b) {
-              if (a.type === b.type) {
-                return (b.path.split('/').length -
-                        a.path.split('/').length);
-              }
-              return (a.type === "tree");
-            });
+            var path, folders, currentDir,
+                trees = [];
 
-            // then process each object:
             tree.forEach(function(item) {
 
-              // BLOBS
-
-              var path, folders, currentDir;
+              // build directory structure from blob paths
               if (item.type === "blob") {
+
                 path = item.path.split('/');
                 folders = path.slice(0, path.length - 1);
 
@@ -109,30 +99,41 @@ module.exports = {
                 }
               }
 
-              // TREES
-
-              if (item.type === "tree") {
-                // by sorting first, all blobs will be done
-
-                folders = item.path.split('/');
-
-                // traverse model to tree path
-                currentDir = fileSystem;
-                folders.forEach(function(folder) {
-                  currentDir = currentDir[folder];
-                });
-
-                // set tree sha
-                currentDir[' sha'] = item.sha;
-
-                item.children = getChildrenSha(currentDir);
-
-                // store object if new
-                if (objStore && !(item.sha in objStore)) {
-                  objStore[item.sha] = item;
-                }
+              // put trees into their own array
+              else {
+                trees.push(item);
               }
-            }); // END forEach
+            });
+
+            // sort trees longest to shortest path
+            trees.sort(function(a, b) {
+                return (b.path.split('/').length -
+                        a.path.split('/').length);
+            });
+
+
+            // build tree relationships
+            trees.forEach(function(item) {
+
+              folders = item.path.split('/');
+
+              // traverse model to tree path
+              currentDir = fileSystem;
+              folders.forEach(function(folder) {
+                currentDir = currentDir[folder];
+              });
+
+              // set tree sha
+              currentDir[' sha'] = item.sha;
+
+              // get children
+              item.children = getChildrenSha(currentDir);
+
+              // store object if new
+              if (objStore && !(item.sha in objStore)) {
+                objStore[item.sha] = item;
+              }
+            });
 
             // finally, add top-level tree itself
             var item = {
@@ -155,7 +156,6 @@ module.exports = {
     };
   }
 };
-
 
 
 
