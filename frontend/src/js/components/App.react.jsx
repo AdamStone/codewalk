@@ -1,7 +1,8 @@
 var React = require('react');
 
 var RepoStore = require('../stores/RepoStore'),
-    CommitList = require('./CommitList.react.jsx');
+    CommitList = require('./CommitList.react.jsx'),
+    FileTree = require('./FileTree.react.jsx');
 
 
 function getAppState() {
@@ -47,7 +48,7 @@ module.exports = React.createClass({
           </div>
 
           <div className="right-bar">
-
+            <FileTree repo={repo}/>
           </div>
 
         </div>

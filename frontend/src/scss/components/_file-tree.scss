@@ -1,0 +1,63 @@
+.file-tree {
+  @include pos(a, 0 0 0 0);
+  @include unselectable();
+  padding: 0.75em;
+  background-color: $file-tree-bg;
+  color: $file-tree-color;
+  overflow: scroll;
+  font-size: 14px;
+
+  &.modified {
+    color: $file-tree-color-modified;
+  }
+
+  .file, .folder {
+    cursor: pointer;
+    padding: 0.1em 0;
+    &:hover {
+      color: $file-tree-color-hover;
+    }
+  }
+
+  .file {
+    margin-bottom: .25em;
+  }
+
+  .folder {
+    @include pos(a, null 0 null 0);
+    padding-left: 1.5em;
+
+    &::before {
+      @include fa("\f07b");
+    }
+
+    &.expanded {
+      &::before {
+        @include fa("\f07c");
+      }
+    }
+  }
+
+  .tree-view {
+    position: relative;
+    min-width: 100%;
+    display: inline-block;
+
+    &:hover {
+      background-color: $file-tree-bg-hover;
+    }
+  }
+
+  .tree-view_children {
+    margin-top: .5em;
+  }
+
+  .tree-view_children-collapsed {
+    display: none;
+  }
+
+  .tree-view_arrow {
+    visibility: hidden;
+  }
+
+}

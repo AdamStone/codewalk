@@ -118,7 +118,8 @@ describe('CommitList', function() {
       );
       var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
-      expect(listNodes[0].getDOMNode().className).toBe('checked-out');
+      expect(listNodes[0].getDOMNode().className)
+        .toBe('checked-out');
     });
 
 
@@ -134,7 +135,8 @@ describe('CommitList', function() {
       );
       var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
-      expect(listNodes[1].getDOMNode().className).toBe('checked-out');
+      expect(listNodes[1].getDOMNode().className)
+        .toBe('checked-out');
     });
 
 });

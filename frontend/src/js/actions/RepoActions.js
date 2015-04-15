@@ -18,6 +18,16 @@ module.exports = {
         branch: branch
       }
     });
+  },
+
+  gotTree: function(repo, tree) {
+    AppDispatcher.handleServerAction({
+      actionType: Constants.Repo.GOT_TREE,
+      data: {
+        repo: repo,
+        tree: tree
+      }
+    });
   }
 
 };

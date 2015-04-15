@@ -103,6 +103,12 @@ _dispatchToken = AppDispatcher.register(
         break;
 
 
+      case Constants.Repo.GOT_TREE:
+
+        // data: repo, tree
+        break;
+
+
       default:
         return true;
     }
