@@ -1,3 +1,7 @@
+jest.dontMock('../../utils/mockStorage');
+var mockStorage = require('../../utils/mockStorage');
+mockStorage('sessionStorage');
+
 var RepoStoreMock = jest.genMockFromModule('../RepoStore.js');
 
 

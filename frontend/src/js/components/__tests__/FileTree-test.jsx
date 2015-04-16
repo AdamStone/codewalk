@@ -1,14 +1,10 @@
 jest.dontMock('../FileTree.react.jsx');
-jest.dontMock('../../utils/mockStorage');
 
 var React, TestUtils, Component, FileTree, RepoStore,
-    repo, mockStorage, div, folder, files, children;
+    repo, div, folder, files, children;
 
 describe('FileTree', function() {
   beforeEach(function() {
-    mockStorage = require('../../utils/mockStorage');
-    mockStorage('sessionStorage');
-
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../FileTree.react.jsx');

@@ -1,15 +1,11 @@
 jest.dontMock('../CommitList.react.jsx');
-jest.dontMock('../../utils/mockStorage');
 
 var React, TestUtils, Component, CommitList,
-    RepoStore, mockStorage, repo;
+    RepoStore, repo;
 
 describe('CommitList', function() {
 
   beforeEach(function() {
-    mockStorage = require('../../utils/mockStorage');
-    mockStorage('sessionStorage');
-
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../CommitList.react.jsx');
