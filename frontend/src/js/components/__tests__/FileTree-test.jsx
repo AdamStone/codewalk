@@ -2,7 +2,7 @@ jest.dontMock('../FileTree.react.jsx');
 jest.dontMock('../../utils/mockStorage');
 
 var React, TestUtils, Component, FileTree, RepoStore,
-    mockStorage, div, folder, files, children;
+    repo, mockStorage, div, folder, files, children;
 
 describe('FileTree', function() {
   beforeEach(function() {
@@ -14,6 +14,8 @@ describe('FileTree', function() {
     Component = require('../FileTree.react.jsx');
     RepoStore = require('../../stores/RepoStore');
 
+    repo = RepoStore.get()['jest-test-repo'];
+/*
     repo = {
       owner: "AdamStone",
       name: "xrd-plot",
@@ -64,6 +66,7 @@ describe('FileTree', function() {
         }
       }
     };
+    */
   });
 
 
@@ -88,7 +91,7 @@ describe('FileTree', function() {
 
     function() {
       FileTree = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="hasCommit"/>
+        <Component repo={repo} branch="hasCommits"/>
       );
 
       expect(RepoStore.getTree).toBeCalled();

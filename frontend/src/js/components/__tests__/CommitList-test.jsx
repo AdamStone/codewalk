@@ -15,35 +15,7 @@ describe('CommitList', function() {
     Component = require('../CommitList.react.jsx');
     RepoStore = require('../../stores/RepoStore');
 
-    repo = {
-      owner: "AdamStone",
-      name: "xrd-plot",
-      objs: {
-        'sha1': {
-          commit: {
-            message: 'sha1 header' + '\n' +
-                     'sha1 content'
-          }
-        },
-        'sha2': {
-          commit: {
-            message: 'sha2 header' + '\n' +
-                     'sha2 content'
-          }
-        }
-      },
-      branches: {
-        master: {
-          commits: []
-        },
-        needsCommits: {
-          commits: []
-        },
-        hasCommits: {
-          commits: ['sha1', 'sha2']
-        }
-      }
-    };
+    repo = RepoStore.get()['jest-test-repo'];
   });
 
 
@@ -59,7 +31,7 @@ describe('CommitList', function() {
       expect(RepoStore.getCommits.mock.calls[0][0])
         .toBe('AdamStone');
       expect(RepoStore.getCommits.mock.calls[0][1])
-        .toBe('xrd-plot');
+        .toBe('jest-test-repo');
     });
 
 
@@ -102,9 +74,9 @@ describe('CommitList', function() {
       var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
       expect(listNodes[0].props.children)
-        .toBe('sha1 header');
+        .toBe('commit1 header');
       expect(listNodes[1].props.children)
-        .toBe('sha2 header');
+        .toBe('commit2 header');
     });
 
 
