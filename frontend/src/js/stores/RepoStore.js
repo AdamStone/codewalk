@@ -15,6 +15,11 @@ var _dispatchToken,
     _data,
     Repo;
 
+var _pending = {
+  getCommits: {},
+  getTree: {}
+};
+
 var _getInitialState = function() {
   return {
     'xrd-plot': {
@@ -48,19 +53,40 @@ var RepoStore = merge(EventEmitter.prototype, {
     branch = typeof branch !== 'undefined' ?
                         branch : 'master';
 
-    Repo = GitHub.getRepo(owner, repo);
-    Repo.getCommits(_data[repo].objs)
-      .then(function(commits) {
-        RepoActions.gotCommits(repo, commits, branch);
-      }).done();
+    var args = Array.prototype.slice.call(arguments)
+      .join('');
+
+    if (!_pending.getCommits[args]) {
+      _pending.getCommits[args] = true;
+
+      Repo = GitHub.getRepo(owner, repo);
+      Repo.getCommits(_data[repo].objs)
+        .then(function(commits) {
+          RepoActions.gotCommits(repo, commits, branch);
+        })
+        .done(function() {
+          delete _pending.getCommits[args];
+        });
+    }
   },
 
   getTree: function(owner, repo, sha) {
-    Repo = GitHub.getRepo(owner, repo);
-    Repo.getTree(sha, _data[repo].objs)
-      .then(function(tree) {
-        RepoActions.gotTree(repo, tree);
-      }).done();
+
+    var args = Array.prototype.slice.call(arguments)
+      .join('');
+
+    if (!_pending.getTree[args]) {
+      _pending.getTree[args] = true;
+
+      Repo = GitHub.getRepo(owner, repo);
+      Repo.getTree(sha, _data[repo].objs)
+        .then(function(tree) {
+          RepoActions.gotTree(repo, tree);
+        })
+        .done(function() {
+          delete _pending.getTree[args];
+        });
+    }
   },
 
   emitChange: function() {
