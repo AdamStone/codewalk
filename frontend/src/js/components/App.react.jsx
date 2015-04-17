@@ -2,6 +2,7 @@ var React = require('react');
 
 var RepoStore = require('../stores/RepoStore'),
     CommitList = require('./CommitList.react.jsx'),
+    CommitMessage = require('./CommitMessage.react.jsx'),
     FileTree = require('./FileTree.react.jsx');
 
 
@@ -44,7 +45,7 @@ module.exports = React.createClass({
           </div>
 
           <div className="editor">
-
+            <CommitMessage repo={repo}/>
           </div>
 
           <div className="right-bar">

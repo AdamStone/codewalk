@@ -33,6 +33,7 @@ function get() {
         'commit1 sha': {
           commit: {
             message: 'commit1 header' + '\n' +
+                     '======='        + '\n' +
                      'tree IS NOT in objs',
             tree: {
               sha: 'tree1 sha'
@@ -42,6 +43,7 @@ function get() {
         'commit2 sha': {
           commit: {
             message: 'commit2 header' + '\n' +
+                     '-------'        + '\n' +
                      'tree IS in objs',
             tree: {
               sha: 'tree2 sha'
