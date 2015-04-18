@@ -49,7 +49,7 @@ var RepoStore = merge(EventEmitter.prototype, {
     return Utils.copy(_data);
   },
 
-  getCommits: function(owner, repo, branch) {
+  getCommits: function(repo, branch) {
     branch = typeof branch !== 'undefined' ?
                         branch : 'master';
 
@@ -59,10 +59,10 @@ var RepoStore = merge(EventEmitter.prototype, {
     if (!_pending.getCommits[args]) {
       _pending.getCommits[args] = true;
 
-      Repo = GitHub.getRepo(owner, repo);
-      Repo.getCommits(_data[repo].objs)
+      Repo = GitHub.getRepo(repo.owner, repo.name);
+      Repo.getCommits(_data[repo.name].objs)
         .then(function(commits) {
-          RepoActions.gotCommits(repo, commits, branch);
+          RepoActions.gotCommits(repo.name, commits, branch);
         })
         .done(function() {
           delete _pending.getCommits[args];
@@ -70,7 +70,7 @@ var RepoStore = merge(EventEmitter.prototype, {
     }
   },
 
-  getTree: function(owner, repo, sha) {
+  getTree: function(repo, sha) {
 
     var args = Array.prototype.slice.call(arguments)
       .join('');
@@ -78,10 +78,10 @@ var RepoStore = merge(EventEmitter.prototype, {
     if (!_pending.getTree[args]) {
       _pending.getTree[args] = true;
 
-      Repo = GitHub.getRepo(owner, repo);
-      Repo.getTree(sha, _data[repo].objs)
+      Repo = GitHub.getRepo(repo.owner, repo.name);
+      Repo.getTree(sha, _data[repo.name].objs)
         .then(function(tree) {
-          RepoActions.gotTree(repo, tree);
+          RepoActions.gotTree(repo.name, tree);
         })
         .done(function() {
           delete _pending.getTree[args];

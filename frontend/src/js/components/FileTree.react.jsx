@@ -37,7 +37,9 @@ module.exports = React.createClass({
 
 
   fileClick: function(e) {
-    console.log(e.currentTarget);
+    var sha = e.currentTarget.attributes.name.value;
+    console.log(sha);
+
   },
 
 
@@ -59,7 +61,7 @@ module.exports = React.createClass({
 
           if (typeof tree === 'undefined') {
             // commits have loaded, but not trees
-            RepoStore.getTree(repo.owner, repo.name, sha);
+            RepoStore.getTree(repo, sha);
           }
           else {
             // build file structure recursively

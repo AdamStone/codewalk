@@ -25,9 +25,7 @@ module.exports = React.createClass({
         branch = repo.branches[branchName];
 
     if (branch && !branch.commits.length) {
-      RepoStore.getCommits(repo.owner,
-                             repo.name,
-                             branchName);
+      RepoStore.getCommits(repo, branchName);
     }
   },
 

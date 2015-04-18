@@ -24,9 +24,9 @@ describe('CommitList', function() {
         <Component repo={repo}/>
       );
 
-      expect(RepoStore.getCommits.mock.calls[0][0])
+      expect(RepoStore.getCommits.mock.calls[0][0].owner)
         .toBe('AdamStone');
-      expect(RepoStore.getCommits.mock.calls[0][1])
+      expect(RepoStore.getCommits.mock.calls[0][0].name)
         .toBe('jest-test-repo');
     });
 
@@ -40,7 +40,7 @@ describe('CommitList', function() {
         <Component repo={repo}/>
       );
 
-      expect(RepoStore.getCommits.mock.calls[0][2])
+      expect(RepoStore.getCommits.mock.calls[0][1])
         .toBe('master');
     });
 
@@ -54,7 +54,7 @@ describe('CommitList', function() {
         <Component repo={repo} branch="needsCommits"/>
       );
 
-      expect(RepoStore.getCommits.mock.calls[0][2])
+      expect(RepoStore.getCommits.mock.calls[0][1])
         .toBe('needsCommits');
     });
 

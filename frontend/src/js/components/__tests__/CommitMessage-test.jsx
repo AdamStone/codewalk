@@ -45,8 +45,6 @@ describe('CommitMessage', function() {
         .findRenderedDOMComponentWithTag(
           CommitMessage, 'div');
 
-      console.log(div.getDOMNode().innerHTML);
-
       expect(div.getDOMNode().innerHTML)
         .toBeTruthy();
     });
