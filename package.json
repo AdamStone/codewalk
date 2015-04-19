@@ -30,9 +30,11 @@
     "flux": "^2.0.1",
     "github-api": "^0.10.4",
     "hapi": "^8.4.0",
+    "lodash": "^3.7.0",
+    "node-html-encoder": "0.0.2",
     "nodegit": "^0.3.3",
     "promisify-node": "^0.1.5",
-    "react": "^0.12.1",
+    "react": "^0.13.1",
     "react-treeview": "^0.3.11",
     "remarkable": "^1.6.0"
   },

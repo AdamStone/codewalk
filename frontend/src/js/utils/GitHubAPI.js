@@ -16,12 +16,7 @@ module.exports = {
     // return object with methods acting on repo
     return {
 
-      getCommits: function(objStore, branch) {
-        // if no objStore provided, returns raw API
-        // response (array of commit objects. Else,
-        // stores commit objects and returns array
-        // of sha only.
-
+      getCommits: function(branch) {
         // defaults to master branch
         branch = typeof branch !== 'undefined' ?
                             branch : 'master';
@@ -32,32 +27,18 @@ module.exports = {
 
             // make oldest come first
             commits.reverse();
-
-            if (!objStore) {
-              return commits;
-            }
-
-            var shaArray = [];
-            commits.forEach(function(commit) {
-              shaArray.push(commit.sha);
-              objStore[commit.sha] = commit;
-            });
-            return shaArray;
-
+            return commits;
           });
       },
 
-      getTree: function(sha, objStore) {
-        // If objStore is provided, new objects are
-        // saved and sha filesystem model is returned.
-        // Else, returns raw API result (array of objs)
+      getTree: function(sha) {
+        // New objects are saved and sha filesystem
+        // model is returned as well as objs.
+
+        var objs = {};
 
         return repo.getTree(sha + '?recursive=true')
           .then(function(tree) {
-
-            if (!objStore) {
-              return tree;
-            }
 
             // find children of subtrees by using
             // paths to rebuild file system
@@ -93,10 +74,9 @@ module.exports = {
                 // add file sha to end of path
                 currentDir[' files'].push(item.sha);
 
-                // store object if new
-                if (objStore && !(item.sha in objStore)) {
-                  objStore[item.sha] = item;
-                }
+                // store object
+                objs[item.sha] = item;
+
               }
 
               // put trees into their own array
@@ -129,10 +109,8 @@ module.exports = {
               // get children
               item.children = getChildrenSha(currentDir);
 
-              // store object if new
-              if (objStore && !(item.sha in objStore)) {
-                objStore[item.sha] = item;
-              }
+              // store object
+              objs[item.sha] = item;
             });
 
             // finally, add top-level tree itself
@@ -145,12 +123,21 @@ module.exports = {
 
             item.children = getChildrenSha(fileSystem);
 
-            // store object if new
-            if (objStore && !(item.sha in objStore)) {
-              objStore[item.sha] = item;
-            }
+            // store object
+            objs[item.sha] = item;
 
-            return fileSystem;
+            return {
+              fileSystem: fileSystem,
+              objs: objs
+            };
+          });
+      },
+
+      getBlob: function(sha) {
+        // return the promise object
+        return repo.getBlob(sha)
+          .then(function(content) {
+            return content;
           });
       }
     };

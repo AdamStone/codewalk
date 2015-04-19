@@ -1,7 +1,7 @@
 jest.dontMock('../CommitList.react.jsx');
 
 var React, TestUtils, Component, CommitList,
-    RepoStore, repo;
+    RepoStore, repo, commitSha, commits;
 
 describe('CommitList', function() {
 
@@ -11,52 +11,12 @@ describe('CommitList', function() {
     Component = require('../CommitList.react.jsx');
     RepoStore = require('../../stores/RepoStore');
 
-    repo = RepoStore.get()['jest-test-repo'];
+    repo = RepoStore.get()['TestOwner']['jest-test-repo'];
+    commitSha = repo.branches.hasCommits.commits;
+    commits = commitSha.map(function(sha) {
+      return repo.objs[sha];
+    });
   });
-
-
-
-  it('calls RepoStore.getCommits if props.repo is empty',
-
-    function() {
-
-      CommitList = TestUtils.renderIntoDocument(
-        <Component repo={repo}/>
-      );
-
-      expect(RepoStore.getCommits.mock.calls[0][0].owner)
-        .toBe('AdamStone');
-      expect(RepoStore.getCommits.mock.calls[0][0].name)
-        .toBe('jest-test-repo');
-    });
-
-
-
-  it('calls getCommits for master branch by default',
-
-    function() {
-
-      CommitList = TestUtils.renderIntoDocument(
-        <Component repo={repo}/>
-      );
-
-      expect(RepoStore.getCommits.mock.calls[0][1])
-        .toBe('master');
-    });
-
-
-
-  it('calls getCommits for other branch if specified',
-
-    function() {
-
-      CommitList = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="needsCommits"/>
-      );
-
-      expect(RepoStore.getCommits.mock.calls[0][1])
-        .toBe('needsCommits');
-    });
 
 
 
@@ -65,7 +25,7 @@ describe('CommitList', function() {
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="hasCommits"/>
+        <Component commits={commits}/>
       );
       var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
@@ -82,7 +42,7 @@ describe('CommitList', function() {
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="hasCommits"/>
+        <Component commits={commits}/>
       );
       var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
@@ -97,9 +57,7 @@ describe('CommitList', function() {
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
-        <Component repo={repo}
-                   branch="hasCommits"
-                   checkedOut={1}/>
+        <Component commits={commits} checkedOut={1}/>
       );
       var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');

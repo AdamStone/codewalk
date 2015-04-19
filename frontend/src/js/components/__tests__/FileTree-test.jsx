@@ -1,7 +1,7 @@
 jest.dontMock('../FileTree.react.jsx');
 
 var React, TestUtils, Component, FileTree, RepoStore,
-    repo, div, folder, files, children;
+    repo, tree, div, folder, files, children;
 
 describe('FileTree', function() {
   beforeEach(function() {
@@ -10,59 +10,7 @@ describe('FileTree', function() {
     Component = require('../FileTree.react.jsx');
     RepoStore = require('../../stores/RepoStore');
 
-    repo = RepoStore.get()['jest-test-repo'];
-/*
-    repo = {
-      owner: "AdamStone",
-      name: "xrd-plot",
-      branches: {
-        master: {
-          commits: []
-        },
-        hasCommit: {
-          commits: ['commit1 sha']
-        },
-        hasTree: {
-          commits: ['commit2 sha']
-        }
-      },
-      objs: {
-        'commit1 sha': {
-          commit: {
-            message: 'tree IS NOT in objs',
-            tree: {
-              sha: 'tree1 sha'
-            }
-          }
-        },
-        'commit2 sha': {
-          commit: {
-            message: 'tree IS in objs',
-            tree: {
-              sha: 'tree2 sha'
-            }
-          }
-        },
-        'tree2 sha': {
-          children: ['child blob sha',
-                     'child tree sha']
-        },
-        'child blob sha': {
-          type: 'blob',
-          path: 'file1.blob'
-        },
-        'child tree sha': {
-          type: 'tree',
-          path: 'folder1',
-          children: ['subchild blob sha']
-        },
-        'subchild blob sha': {
-          type: 'blob',
-          path: 'folder1/file2.blob'
-        }
-      }
-    };
-    */
+    repo = RepoStore.get()['TestOwner']['jest-test-repo'];
   });
 
 
@@ -71,7 +19,7 @@ describe('FileTree', function() {
 
     function() {
       FileTree = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="master"/>
+        <Component tree={null} repo={repo}/>
       );
 
       div = TestUtils
@@ -83,23 +31,13 @@ describe('FileTree', function() {
 
 
 
-  it('calls RepoStore.getTree if commit tree is missing',
-
-    function() {
-      FileTree = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="hasCommits"/>
-      );
-
-      expect(RepoStore.getTree).toBeCalled();
-    });
-
-
-
   it('renders top-level components of file system',
 
     function() {
+
+      tree = repo.objs['tree2 sha'];
       FileTree = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="hasTree"/>
+        <Component tree={tree} repo={repo}/>
       );
 
       div = TestUtils
@@ -118,8 +56,9 @@ describe('FileTree', function() {
   it('only renders subtrees once expanded',
 
     function() {
+      tree = repo.objs['tree2 sha'];
       FileTree = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="hasTree"/>
+        <Component tree={tree} repo={repo}/>
       );
 
       // before click

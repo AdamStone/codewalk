@@ -7,25 +7,10 @@ var React = require('react'),
 
 module.exports = React.createClass({
 
-  getDefaultProps: function() {
-    return {
-      branch: 'master',
-      checkedOut: 0
-    };
-  },
-
-
   render: function() {
+    var markdown = this.props.markdown;
 
-    var repo = this.props.repo,
-        branch = this.props.branch,
-        commits = repo.branches[branch].commits,
-        checkedOut = this.props.checkedOut,
-        body = null;
-
-    if (commits.length) {
-      var commit = repo.objs[commits[checkedOut]],
-          message = commit.commit.message;/*.split('\n'),
+          /*.split('\n'),
           heading = message[0];
 
       body = message.slice(1, message.length)
@@ -34,12 +19,11 @@ module.exports = React.createClass({
         body = body.slice(1, body.length)
       }
       body = body.join('\n');*/
-    }
 
     return (
       <div className="commit-message"
            dangerouslySetInnerHTML={
-             {__html: md.render(message) }}>
+             {__html: md.render(markdown) }}>
       </div>
     );
   }

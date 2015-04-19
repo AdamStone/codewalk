@@ -5,10 +5,12 @@
     @include pos(a, 0 null 0 0);
     width: $left-bar-width;
     background-color: $left-bar-bg;
+    overflow: auto;
   }
 
-  .editor {
+  .content-view {
     @include pos(a, 0 $right-bar-width 0 $left-bar-width);
+    overflow: auto;
   }
 
   .right-bar {

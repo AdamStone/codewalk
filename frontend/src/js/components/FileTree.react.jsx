@@ -3,19 +3,10 @@
 var React = require('react'),
     TreeView = require('react-treeview');
 
-var RepoStore = require('../stores/RepoStore');
-
+var RepoStore = require('../stores/RepoStore'),
+    ViewActions = require('../actions/ViewActions');
 
 module.exports = React.createClass({
-
-  getDefaultProps: function() {
-    return {
-      branch: 'master',
-      checkedOut: 0
-    };
-  },
-
-
 
   getInitialState: function() {
     return {
@@ -38,35 +29,20 @@ module.exports = React.createClass({
 
   fileClick: function(e) {
     var sha = e.currentTarget.attributes.name.value;
-    console.log(sha);
-
+    ViewActions.viewFile(sha);
   },
 
 
 
   render: function() {
 
-    var repo = this.props.repo,
-        branch = this.props.branch,
-        commits = repo.branches[branch].commits,
-        checkedOut = this.props.checkedOut;
+    var tree = this.props.tree,
+        repo = this.props.repo;
 
     var view = null;
-
-    if (commits.length) {
-
-      var commit = repo.objs[commits[checkedOut]].commit,
-          sha = commit.tree.sha,
-          tree = repo.objs[sha];
-
-          if (typeof tree === 'undefined') {
-            // commits have loaded, but not trees
-            RepoStore.getTree(repo, sha);
-          }
-          else {
-            // build file structure recursively
-            view = walk(tree, repo.objs, this);
-          }
+    if (tree) {
+      // build file structure recursively
+      view = walk(tree, repo.objs, this);
     }
 
     return (
@@ -80,6 +56,7 @@ module.exports = React.createClass({
 
 
 function walk(tree, objStore, thisObj) {
+
   return tree.children.map(function(sha) {
     var obj = objStore[sha];
 

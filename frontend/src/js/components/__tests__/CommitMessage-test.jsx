@@ -1,28 +1,25 @@
 jest.dontMock('../CommitMessage.react.jsx');
 
 var React, TestUtils, Component, CommitMessage,
-    RepoStore, repo;
+    markdown, rendered;
 
 describe('CommitMessage', function() {
 
   beforeEach(function() {
 
-
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../CommitMessage.react.jsx');
-    RepoStore = require('../../stores/RepoStore');
-
-    repo = RepoStore.get()['jest-test-repo'];
   });
 
 
 
-  it('renders empty div if no commits',
+  it('renders empty div if no message',
 
     function() {
+
       CommitMessage = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="needsCommits"/>
+        <Component markdown={''}/>
       );
 
       div = TestUtils
@@ -34,11 +31,23 @@ describe('CommitMessage', function() {
 
 
 
-  it('renders body of checked out commit message',
+  it('renders commit message as markdown',
 
     function() {
+
+      markdown = [
+        'commit header',
+        '=======',
+        'commit body',
+      ].join('\n');
+
+      rendered = [
+        '<h1>commit header</h1>\n',
+        '<p>commit body</p>\n'
+      ].join('');
+
       CommitMessage = TestUtils.renderIntoDocument(
-        <Component repo={repo} branch="hasCommits"/>
+        <Component markdown={markdown}/>
       );
 
       div = TestUtils
@@ -46,7 +55,7 @@ describe('CommitMessage', function() {
           CommitMessage, 'div');
 
       expect(div.getDOMNode().innerHTML)
-        .toBeTruthy();
+        .toBe(rendered);
     });
 
 });

@@ -5,7 +5,7 @@ var AppDispatcher = require('../dispatcher/AppDispatcher'),
 
 module.exports = {
 
-  gotCommits: function(repo, commits, branch) {
+  gotCommits: function(owner, repoName, commits, branch) {
 
     branch = typeof branch !== 'undefined' ?
                         branch : 'master';
@@ -13,19 +13,33 @@ module.exports = {
     AppDispatcher.handleServerAction({
       actionType: Constants.Repo.GOT_COMMITS,
       data: {
-        repo: repo,
+        owner: owner,
+        repoName: repoName,
         commits: commits,
         branch: branch
       }
     });
   },
 
-  gotTree: function(repo, tree) {
+  gotTree: function(owner, repoName, tree) {
     AppDispatcher.handleServerAction({
       actionType: Constants.Repo.GOT_TREE,
       data: {
-        repo: repo,
+        owner: owner,
+        repoName: repoName,
         tree: tree
+      }
+    });
+  },
+
+  gotBlob: function(owner, repoName, sha, content) {
+    AppDispatcher.handleServerAction({
+      actionType: Constants.Repo.GOT_BLOB,
+      data: {
+        owner: owner,
+        repoName: repoName,
+        sha: sha,
+        content: content
       }
     });
   }
