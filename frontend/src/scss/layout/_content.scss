@@ -10,7 +10,6 @@
 
   .content-view {
     @include pos(a, 0 $right-bar-width 0 $left-bar-width);
-    overflow: auto;
   }
 
   .right-bar {
