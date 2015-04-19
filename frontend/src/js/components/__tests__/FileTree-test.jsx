@@ -53,38 +53,49 @@ describe('FileTree', function() {
 
 
 
-  it('only renders subtrees once expanded',
+  it('adds `viewing` class to active file if visible',
 
     function() {
+
       tree = repo.objs['tree2 sha'];
       FileTree = TestUtils.renderIntoDocument(
-        <Component tree={tree} repo={repo}/>
+        <Component tree={tree} repo={repo}
+                   viewing="child blob sha"/>
       );
 
-      // before click
-      files = TestUtils
-        .scryRenderedDOMComponentsWithClass(
-          FileTree, 'file');
-
-      expect(files.length).toBe(1);
-      expect(files[0].props.name)
-        .toBe('child blob sha');
-
-      // click
-      folder = TestUtils
+      div = TestUtils
         .findRenderedDOMComponentWithClass(
-          FileTree, 'folder');
+          FileTree, 'file-tree');
 
-      TestUtils.Simulate.click(folder);
+      children = div.props.children;
+      var className = children[0]._store.props.className;
 
-      // after click
-      files = TestUtils
-        .scryRenderedDOMComponentsWithClass(
-          FileTree, 'file');
+      expect(className.split(' '))
+        .toContain('viewing');
+    });
 
-      expect(files.length).toBe(2);
-      expect(files[1].props.name)
-        .toBe('subchild blob sha');
+
+
+  it('adds `viewing` class to parent folder if collapsed',
+
+    function() {
+
+      tree = repo.objs['tree2 sha'];
+      FileTree = TestUtils.renderIntoDocument(
+        <Component tree={tree} repo={repo}
+                   viewing="subchild blob sha"/>
+      );
+
+      div = TestUtils
+        .findRenderedDOMComponentWithClass(
+          FileTree, 'file-tree');
+
+      children = div.props.children;
+      var nodeLabel = children[1]._store.props.nodeLabel,
+          className = nodeLabel._store.props.className;
+
+      expect(className.split(' '))
+        .toContain('viewing');
     });
 
 });

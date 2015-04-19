@@ -3,8 +3,7 @@
 var React = require('react'),
     TreeView = require('react-treeview');
 
-var RepoStore = require('../stores/RepoStore'),
-    ViewActions = require('../actions/ViewActions');
+var ViewActions = require('../actions/ViewActions');
 
 module.exports = React.createClass({
 
@@ -37,12 +36,13 @@ module.exports = React.createClass({
   render: function() {
 
     var tree = this.props.tree,
+        viewing = this.props.viewing,
         repo = this.props.repo;
 
     var view = null;
     if (tree) {
       // build file structure recursively
-      view = walk(tree, repo.objs, this);
+      view = walk(tree, repo.objs, this)[0];
     }
 
     return (
@@ -57,17 +57,26 @@ module.exports = React.createClass({
 
 function walk(tree, objStore, thisObj) {
 
-  return tree.children.map(function(sha) {
+  // track whether tree contains a file being viewed
+  var containsViewing = false;
+
+  var mapped = tree.children.map(function(sha) {
     var obj = objStore[sha];
 
     // BLOBS
     if (obj.type === 'blob') {
       var path = obj.path.split('/'),
-          filename = path[path.length - 1];
+          filename = path[path.length - 1],
+          viewing = thisObj.props.viewing === sha;
+
+      if (viewing) {
+        containsViewing = true;
+      }
+
       return (
         <div key={sha}
              name={sha}
-             className="file"
+             className={"file" + (viewing ? " viewing" : "")}
              onClick={thisObj.fileClick}>
           {filename}
         </div>
@@ -77,21 +86,31 @@ function walk(tree, objStore, thisObj) {
     // TREES
     if (obj.type === 'tree') {
       var path = obj.path.split('/'),
-          expanded = thisObj.state.expanded[sha],
-          nodeLabel = (
-            <span name={sha}
-                  onClick={thisObj.folderClick}
-                  className={"folder" + (expanded ?
-                                      " expanded" : "")}>
-              {path[path.length - 1]}
-            </span>
-          );
+          expanded = thisObj.state.expanded[sha];
 
-      // walk subtrees only if expanded
-      var subTree = null;
-      if (expanded) {
-        subTree = walk(obj, objStore, thisObj)
+      var subWalk = walk(obj, objStore, thisObj),
+          subTree = subWalk[0],
+          subViewing = subWalk[1];
+
+      var labelClass = "folder";
+      labelClass += (expanded ? " expanded" : "");
+
+      if (subViewing) {
+        containsViewing = true;
+
+        // Color folder if collapsed and contains viewing
+        if (!expanded) {
+          labelClass += (subViewing ? " viewing" : "");
+        }
       }
+
+      var nodeLabel = (
+        <span name={sha}
+              onClick={thisObj.folderClick}
+              className={labelClass}>
+          {path[path.length - 1]}
+        </span>
+      );
 
       return (
         <TreeView key={sha}
@@ -103,4 +122,6 @@ function walk(tree, objStore, thisObj) {
     }
 
   });
+
+  return [mapped, containsViewing];
 }

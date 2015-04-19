@@ -23,6 +23,10 @@
     margin-bottom: .25em;
   }
 
+  .viewing {
+    color: $file-tree-viewing-color;
+  }
+
   .folder {
     @include pos(a, null 0 null 0);
     padding-left: 1.5em;
