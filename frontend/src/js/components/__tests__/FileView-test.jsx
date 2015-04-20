@@ -1,9 +1,9 @@
 jest.dontMock('../FileView.react.jsx');
 
 var React, TestUtils, Component, FileView, ViewActions,
-    content, pre, innerHtml, Encoder, encoder;
+    filename, content, code, innerHtml, Encoder, encoder;
 
-describe('CodeView', function() {
+describe('FileView', function() {
 
   beforeEach(function() {
     React = require('react/addons');
@@ -12,7 +12,9 @@ describe('CodeView', function() {
     ViewActions = require('../../actions/ViewActions');
     Encoder = require('node-html-encoder').Encoder;
     encoder = new Encoder('entity');
+    filename = 'somefile';
   });
+
 
 
   it('renders blob content if available',
@@ -22,14 +24,33 @@ describe('CodeView', function() {
       content = 'some file content';
 
       FileView = TestUtils.renderIntoDocument(
-        <Component content={content}/>
+        <Component filename={filename} content={content}/>
       );
 
-      pre = TestUtils.findRenderedDOMComponentWithTag(
-        FileView, 'pre');
+      code = TestUtils.findRenderedDOMComponentWithTag(
+        FileView, 'code');
 
-      innerHtml = pre.props.dangerouslySetInnerHTML.__html
+      innerHtml = code.props.dangerouslySetInnerHTML.__html
       expect(innerHtml).toBe(content);
+    });
+
+
+
+  it('adds file extension to <code> className',
+
+    function() {
+
+      content = 'some file content';
+      filename = 'some-js-file.js';
+
+      FileView = TestUtils.renderIntoDocument(
+        <Component filename={filename} content={content}/>
+      );
+
+      code = TestUtils.findRenderedDOMComponentWithTag(
+        FileView, 'code');
+
+      expect(code.props.className).toBe('js');
     });
 
 
@@ -41,13 +62,13 @@ describe('CodeView', function() {
       content = '<b>some bold content</b>';
 
       FileView = TestUtils.renderIntoDocument(
-        <Component content={content}/>
+        <Component filename={filename} content={content}/>
       );
 
-      pre = TestUtils.findRenderedDOMComponentWithTag(
-        FileView, 'pre');
+      code = TestUtils.findRenderedDOMComponentWithTag(
+        FileView, 'code');
 
-      innerHtml = pre.props.dangerouslySetInnerHTML.__html
+      innerHtml = code.props.dangerouslySetInnerHTML.__html
       expect(innerHtml).toBe(encoder.htmlEncode(content));
     });
 
@@ -60,7 +81,7 @@ describe('CodeView', function() {
       content = '<b>some bold content</b>';
 
       FileView = TestUtils.renderIntoDocument(
-        <Component content={content}/>
+        <Component filename={filename} content={content}/>
       );
 
       var event = document.createEvent("HTMLEvents");
@@ -81,7 +102,7 @@ describe('CodeView', function() {
         content = '<b>some bold content</b>';
 
         FileView = TestUtils.renderIntoDocument(
-          <Component content={content}/>
+          <Component filename={filename} content={content}/>
         );
 
         var close = TestUtils.findRenderedDOMComponentWithClass(

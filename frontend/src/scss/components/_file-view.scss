@@ -1,8 +1,17 @@
 .file-view {
-  padding: 1em;
+  height: 100%;
 
   pre {
     margin: 0;
-    overflow: visible;
+    height: 100%;
+
+    code {
+      margin: 0;
+      min-height: 100%;
+      box-sizing: border-box;
+      border: none;
+      padding: 1em;
+    }
+
   }
 }

@@ -35,9 +35,9 @@ module.exports = function(grunt) {
 
     cssmin: {
       build: {
-        files: {
-          'frontend/public/css/styles.min.css' : 'frontend/src/css/styles.css'
-        }
+        src: ['frontend/src/css/styles.css',
+              'frontend/src/css/atelier-lakeside.dark.css'],
+        dest: 'frontend/public/css/styles.min.css'
       }
     },
 

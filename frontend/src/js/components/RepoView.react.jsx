@@ -102,7 +102,9 @@ module.exports = React.createClass({
         // file blob exists in repo
 
         // optimistically show FileView to prevent flicker
-        fileView = <FileView content={blob.content}/>;
+        var filename = blob.path.split('/').reverse()[0];
+        fileView = <FileView filename={filename}
+                             content={blob.content}/>;
 
         if (typeof blob.content === 'undefined') {
           // blob is missing content
