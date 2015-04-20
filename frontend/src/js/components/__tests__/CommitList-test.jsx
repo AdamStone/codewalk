@@ -1,7 +1,7 @@
 jest.dontMock('../CommitList.react.jsx');
 
-var React, TestUtils, Component, CommitList,
-    RepoStore, repo, commitSha, commits;
+var React, TestUtils, Component, CommitList, ViewActions,
+    RepoStore, repo, commitSha, commits, listNodes;
 
 describe('CommitList', function() {
 
@@ -9,6 +9,7 @@ describe('CommitList', function() {
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../CommitList.react.jsx');
+    ViewActions = require('../../actions/ViewActions');
     RepoStore = require('../../stores/RepoStore');
 
     repo = RepoStore.get()['TestOwner']['jest-test-repo'];
@@ -27,7 +28,7 @@ describe('CommitList', function() {
       CommitList = TestUtils.renderIntoDocument(
         <Component commits={commits}/>
       );
-      var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
+      listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
       expect(listNodes[0].props.children)
         .toBe('commit1 header');
@@ -44,7 +45,7 @@ describe('CommitList', function() {
       CommitList = TestUtils.renderIntoDocument(
         <Component commits={commits}/>
       );
-      var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
+      listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
       expect(listNodes[0].getDOMNode().className)
         .toBe('checked-out');
@@ -52,14 +53,32 @@ describe('CommitList', function() {
 
 
 
-  it('marks specified checked-out otherwise',
+  it('checks out commit on click if not currently checked out',
+
+    function() {
+
+      CommitList = TestUtils.renderIntoDocument(
+        <Component commits={commits} checkedOut={0}/>
+      );
+
+      listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
+                                                CommitList, 'li');
+
+      TestUtils.Simulate.click(listNodes[1]);
+
+      expect(ViewActions.checkout).toBeCalled();
+    });
+
+
+
+  it('marks specified commit checked-out',
 
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
         <Component commits={commits} checkedOut={1}/>
       );
-      var listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
+      listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
       expect(listNodes[1].getDOMNode().className)
         .toBe('checked-out');

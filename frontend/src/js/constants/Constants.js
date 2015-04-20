@@ -11,7 +11,8 @@ module.exports = {
   }),
 
   View: keyMirror({
-    VIEW_FILE: null
+    VIEW_FILE: null,
+    CHECKOUT: null
   })
 
 };

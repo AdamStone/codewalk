@@ -2,7 +2,8 @@
 
 var React = require('react');
 
-var RepoStore = require('../stores/RepoStore');
+var RepoStore = require('../stores/RepoStore'),
+    ViewActions = require('../actions/ViewActions');
 
 module.exports = React.createClass({
 
@@ -15,6 +16,15 @@ module.exports = React.createClass({
 
 
 
+  checkout: function(commitIndex) {
+
+    if (commitIndex !== this.props.checkedOut) {
+      ViewActions.checkout(commitIndex);
+    }
+  },
+
+
+
   render: function() {
 
     var commits = this.props.commits,
@@ -23,21 +33,22 @@ module.exports = React.createClass({
     var listItems = [];
 
     for (var i = 0; i < commits.length; i++) {
-      var commit = commits[i];
-      var message = commit.commit.message.split('\n');
-      var heading = message[0];
-      var body = message.slice(1, message.length);
+      var commit = commits[i],
+          message = commit.commit.message.split('\n'),
+          heading = message[0],
+          body = message.slice(1, message.length);
 
       if (checkedOut === i) {
         listItems.push(
-          <li key={i} className="checked-out">
+          <li onClick={this.checkout.bind(this, i)} ref={i} key={i}
+              className="checked-out">
             {heading}
           </li>
         );
       }
       else {
         listItems.push(
-          <li key={i}>
+          <li onClick={this.checkout.bind(this, i)} ref={i} key={i}>
             {heading}
           </li>
         );

@@ -73,7 +73,7 @@ describe('RepoView', function() {
     function() {
 
       // simulate url /:owner/:repo
-      RepoView = mockRouter(Component, {checkedOut: 0}, {
+      RepoView = mockRouter(Component, {}, {
         getCurrentParams: function() {
           return {
             owner: 'TestOwner',
@@ -96,12 +96,13 @@ describe('RepoView', function() {
 
       ViewStore.get.mockImplementation(function() {
         return {
-          file: 'child blob sha'
+          file: 'child blob sha',
+          checkedOut: 0
         }
       });
 
       // simulate url /:owner/:repo
-      RepoView = mockRouter(Component, {checkedOut: 0}, {
+      RepoView = mockRouter(Component, {}, {
         getCurrentParams: function() {
           return {
             owner: 'TestOwner',
@@ -115,6 +116,5 @@ describe('RepoView', function() {
 
       expect(RepoStore.getBlob).toBeCalled();
     });
-
 
 });

@@ -12,6 +12,7 @@ module.exports = ViewStoreMock;
 
 function get() {
   return {
-    file: null
+    file: null,
+    checkedOut: 0
   };
 }

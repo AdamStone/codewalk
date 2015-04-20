@@ -5,6 +5,18 @@ var AppDispatcher = require('../dispatcher/AppDispatcher'),
 
 module.exports = {
 
+  checkout: function(commitIndex) {
+
+    AppDispatcher.handleViewAction({
+      actionType: Constants.View.CHECKOUT,
+      data: {
+        commitIndex: commitIndex
+      }
+    });
+  },
+
+
+
   viewFile: function(sha) {
 
     AppDispatcher.handleViewAction({

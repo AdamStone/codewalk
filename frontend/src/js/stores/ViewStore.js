@@ -13,7 +13,8 @@ var _dispatchToken,
 
 var _getInitialState = function() {
   return {
-    file: null
+    file: null,
+    checkedOut: 0
   };
 };
 
@@ -51,7 +52,8 @@ _dispatchToken = AppDispatcher.register(
 
     var action = payload.action,
         data = action.data,
-        sha = data.sha;
+        sha = data.sha,
+        commitIndex = data.commitIndex;
 
 
     switch(action.actionType) {
@@ -60,6 +62,13 @@ _dispatchToken = AppDispatcher.register(
 
         // data: sha
         _data.file = sha;
+        break;
+
+
+      case Constants.View.CHECKOUT:
+
+        // data: sha
+        _data.checkedOut = commitIndex;
         break;
 
 

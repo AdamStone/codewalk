@@ -53,7 +53,7 @@ module.exports = React.createClass({
         repoName = params.repo,
         branch = params.branch || 'master',
 
-        checkedOut = this.props.checkedOut || 0; // TEMP
+        checkedOut = view.checkedOut;
 
     var repo = (
       (repos[owner] && repos[owner][repoName]) ||
