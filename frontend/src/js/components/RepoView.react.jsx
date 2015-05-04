@@ -61,7 +61,10 @@ module.exports = React.createClass({
     );
 
     var commits = [],
+        commit = null,
+        sha = null,
         tree = null,
+        diffed = {},
         message = '';
 
     // get commits, if repo known
@@ -75,9 +78,10 @@ module.exports = React.createClass({
 
     // get tree, if commits known
     if (commits.length) {
-      var commit = commits[checkedOut].commit,
-          sha = commit.tree.sha,
-          message = commit.message;
+      commit = commits[checkedOut].commit;
+      sha = commit.tree.sha;
+      diffed = commit.diffed;
+      message = commit.message;
 
       tree = repo.objs[sha];
       if (typeof tree === 'undefined') {
@@ -113,7 +117,7 @@ module.exports = React.createClass({
         // optimistically show FileView to prevent flicker
         var filename = blob.path.split('/').reverse()[0];
         fileView = <FileView filename={filename}
-                             commit={commits[checkedOut]}
+                             commit={commit}
                              blob={blob}/>;
 
         if (typeof blob.content === 'undefined') {
@@ -142,6 +146,7 @@ module.exports = React.createClass({
 
           <div className="right-bar">
             <FileTree tree={tree}
+                      diffed={diffed}
                       expanded={view.expanded}
                       viewing={view.file}
                       repo={repo}/>

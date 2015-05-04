@@ -77,6 +77,7 @@ _dispatchToken = AppDispatcher.register(
 
         // data: sha
         _data.checkedOut = commitIndex;
+        _data.file = null;
         break;
 
 

@@ -222,7 +222,7 @@ _dispatchToken = AppDispatcher.register(
         var files = data.files;
 
         target = _getOrInit(owner, repoName);
-        var commit = target.repo.objs[sha];
+        var commit = target.repo.objs[sha].commit;
         commit.diffed = {};
 
         files.forEach(function(file) {

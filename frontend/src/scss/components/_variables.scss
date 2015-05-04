@@ -8,7 +8,9 @@ $commit-li-checkout-bg: #e3e3e3;
 // FILE TREE
 $file-tree-bg: #080808;
 $file-tree-bg-hover: rgba(255,255,255,.02);
-$file-tree-color-hover: #ccc;
 $file-tree-color: #666;
-$file-tree-color-modified: #eee;
-$file-tree-viewing-color: rgb(200, 255, 225);
+$file-tree-color-hover: #fff;
+$file-tree-color-changed: #ccc;
+$file-tree-color-viewing: rgba(136, 221, 255, 0.6);
+$file-tree-color-viewing-changed: rgba(136, 221, 255, 1);
+$file-tree-viewing-color: #8DF;

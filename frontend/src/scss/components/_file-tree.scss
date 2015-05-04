@@ -7,24 +7,25 @@
   overflow: scroll;
   font-size: 14px;
 
-  &.modified {
-    color: $file-tree-color-modified;
-  }
-
   .file, .folder {
     cursor: pointer;
     padding: 0.1em 0;
-    &:hover {
-      color: $file-tree-color-hover;
+
+    &.viewing {
+      color: $file-tree-color-viewing;
+
+      &.changed {
+        color: $file-tree-color-viewing-changed;
+      }
     }
-  }
 
-  .file {
-    margin-bottom: .25em;
-  }
+    &.changed {
+      color: $file-tree-color-changed;
+    }
 
-  .viewing {
-    color: $file-tree-viewing-color;
+    &:hover {
+      color: $file-tree-color-hover !important;
+    }
   }
 
   .folder {
@@ -46,14 +47,12 @@
     position: relative;
     min-width: 100%;
     display: inline-block;
-
-    &:hover {
-      background-color: $file-tree-bg-hover;
-    }
+    overflow: visible;
+    margin-bottom: .25em;
   }
 
   .tree-view_children {
-    margin-top: .5em;
+    margin-top: .25em;
   }
 
   .tree-view_children-collapsed {

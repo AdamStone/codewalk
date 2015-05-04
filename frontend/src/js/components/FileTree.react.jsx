@@ -24,13 +24,14 @@ module.exports = React.createClass({
   render: function() {
 
     var tree = this.props.tree,
+        diffed = this.props.diffed,
         viewing = this.props.viewing,
         repo = this.props.repo;
 
     var view = null;
     if (tree) {
       // build file structure recursively
-      view = walk(tree, repo.objs, this)[0];
+      view = walk(tree, diffed, repo.objs, this)[0];
     }
 
     return (
@@ -43,10 +44,11 @@ module.exports = React.createClass({
 
 
 
-function walk(tree, objStore, thisObj) {
+function walk(tree, diffed, objStore, thisObj) {
 
   // track whether tree contains a file being viewed
-  var containsViewing = false;
+  var containsViewing = false,
+      containsChanged = false;
 
   var mapped = tree.children.map(function(sha) {
     var obj = objStore[sha];
@@ -57,14 +59,22 @@ function walk(tree, objStore, thisObj) {
           filename = path[path.length - 1],
           viewing = thisObj.props.viewing === sha;
 
+      var classString = "file";
+
       if (viewing) {
         containsViewing = true;
+        classString += " viewing";
+      }
+
+      if (diffed && sha in diffed) {
+        classString += " changed";
+        containsChanged = true;
       }
 
       return (
         <div key={sha}
              name={sha}
-             className={"file" + (viewing ? " viewing" : "")}
+             className={classString}
              onClick={thisObj.fileClick}>
           {filename}
         </div>
@@ -76,21 +86,32 @@ function walk(tree, objStore, thisObj) {
       var path = obj.path.split('/'),
           expanded = thisObj.props.expanded[sha];
 
-      var subWalk = walk(obj, objStore, thisObj),
+      var subWalk = walk(obj, diffed, objStore, thisObj),
           subTree = subWalk[0],
-          subViewing = subWalk[1];
+          subViewing = subWalk[1],
+          subChanged = subWalk[2];
 
       var labelClass = "folder";
-      labelClass += (expanded ? " expanded" : "");
 
       if (subViewing) {
         containsViewing = true;
 
         // Color folder if collapsed and contains viewing
         if (!expanded) {
-          labelClass += (subViewing ? " viewing" : "");
+          labelClass += " viewing";
         }
       }
+
+      if (subChanged) {
+        containsChanged = true;
+
+        // Color folder if collapsed and contains changed
+        if (!expanded) {
+          labelClass += " changed";
+        }
+      }
+
+      labelClass += (expanded ? " expanded" : "");
 
       var nodeLabel = (
         <span name={sha}
@@ -111,5 +132,5 @@ function walk(tree, objStore, thisObj) {
 
   });
 
-  return [mapped, containsViewing];
+  return [mapped, containsViewing, containsChanged];
 }
