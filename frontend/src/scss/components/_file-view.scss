@@ -11,7 +11,15 @@
       box-sizing: border-box;
       border: none;
       padding: 1em;
-    }
 
+      .unchanged {
+        opacity: 0.5;
+      }
+
+      .changed {
+        font-weight: 700;
+        opacity: 1;
+      }
+    }
   }
 }

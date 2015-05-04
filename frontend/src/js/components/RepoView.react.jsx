@@ -85,6 +85,15 @@ module.exports = React.createClass({
         // commits have loaded, but not trees
         RepoStore.getTree(repo.owner, repo.name, sha);
       }
+
+      // get diff if missing
+      if (checkedOut > 0 && !commits[checkedOut].diffed) {
+
+        RepoStore.getDiff(repo.owner, repo.name,
+          commits[checkedOut-1].sha,  // base
+          commits[checkedOut].sha);   // head
+      }
+
     }
     else {
 
@@ -104,7 +113,8 @@ module.exports = React.createClass({
         // optimistically show FileView to prevent flicker
         var filename = blob.path.split('/').reverse()[0];
         fileView = <FileView filename={filename}
-                             content={blob.content}/>;
+                             commit={commits[checkedOut]}
+                             blob={blob}/>;
 
         if (typeof blob.content === 'undefined') {
           // blob is missing content

@@ -1,7 +1,8 @@
 jest.dontMock('../FileView.react.jsx');
 
 var React, TestUtils, Component, FileView, ViewActions,
-    filename, content, code, innerHtml, Encoder, encoder;
+    filename, blob, commit, code, innerHtml, Encoder, encoder,
+    RepoStore, repo;
 
 describe('FileView', function() {
 
@@ -10,28 +11,34 @@ describe('FileView', function() {
     TestUtils = React.addons.TestUtils;
     Component = require('../FileView.react.jsx');
     ViewActions = require('../../actions/ViewActions');
+    RepoStore = require('../../stores/RepoStore');
     Encoder = require('node-html-encoder').Encoder;
     encoder = new Encoder('entity');
     filename = 'somefile';
+
+    repo = RepoStore.get()['TestOwner']['jest-test-repo'];
+    commit = repo.objs['diffed commit sha'];
   });
 
 
 
-  it('renders blob content if available',
+  it('renders available blob content',
 
     function() {
 
-      content = 'some file content';
+      blob = repo.objs['bold blob sha'];
 
       FileView = TestUtils.renderIntoDocument(
-        <Component filename={filename} content={content}/>
+        <Component filename={filename}
+                   commit={commit}
+                   blob={blob}/>
       );
 
       code = TestUtils.findRenderedDOMComponentWithTag(
         FileView, 'code');
 
       innerHtml = code.props.dangerouslySetInnerHTML.__html
-      expect(innerHtml).toBe(content);
+      expect(innerHtml).toBeTruthy();
     });
 
 
@@ -40,11 +47,13 @@ describe('FileView', function() {
 
     function() {
 
-      content = 'some file content';
+      blob = repo.objs['bold blob sha'];
       filename = 'some-js-file.js';
 
       FileView = TestUtils.renderIntoDocument(
-        <Component filename={filename} content={content}/>
+        <Component filename={filename}
+                   commit={commit}
+                   blob={blob}/>
       );
 
       code = TestUtils.findRenderedDOMComponentWithTag(
@@ -59,17 +68,21 @@ describe('FileView', function() {
 
     function() {
 
-      content = '<b>some bold content</b>';
+      blob = repo.objs['bold blob sha'];
 
       FileView = TestUtils.renderIntoDocument(
-        <Component filename={filename} content={content}/>
+        <Component filename={filename}
+                   commit={commit}
+                   blob={blob}/>
       );
 
       code = TestUtils.findRenderedDOMComponentWithTag(
         FileView, 'code');
 
       innerHtml = code.props.dangerouslySetInnerHTML.__html
-      expect(innerHtml).toBe(encoder.htmlEncode(content));
+      expect(innerHtml).toMatch(
+        encoder.htmlEncode(blob.content)
+      );
     });
 
 
@@ -78,10 +91,12 @@ describe('FileView', function() {
 
     function() {
 
-      content = '<b>some bold content</b>';
+      blob = repo.objs['bold blob sha'];
 
       FileView = TestUtils.renderIntoDocument(
-        <Component filename={filename} content={content}/>
+        <Component filename={filename}
+                   commit={commit}
+                   blob={blob}/>
       );
 
       var event = document.createEvent("HTMLEvents");
@@ -95,23 +110,56 @@ describe('FileView', function() {
 
 
 
-    it('closes on X span click',
+  it('closes on X span click',
 
-      function() {
+    function() {
 
-        content = '<b>some bold content</b>';
+      blob = repo.objs['bold blob sha'];
 
-        FileView = TestUtils.renderIntoDocument(
-          <Component filename={filename} content={content}/>
-        );
+      FileView = TestUtils.renderIntoDocument(
+        <Component filename={filename}
+                   commit={commit}
+                   blob={blob}/>
+      );
 
-        var close = TestUtils.findRenderedDOMComponentWithClass(
-          FileView, 'close-button'
-        );
+      var close = TestUtils.findRenderedDOMComponentWithClass(
+        FileView, 'close-button'
+      );
 
-        TestUtils.Simulate.click(close);
+      TestUtils.Simulate.click(close);
 
-        expect(ViewActions.closeFileView).toBeCalled();
-      });
+      expect(ViewActions.closeFileView).toBeCalled();
+    });
+
+
+
+  it('wraps lines in <span> with class `changed` or `unchanged`',
+
+    function() {
+
+      blob = repo.objs['changed blob sha'];
+
+      FileView = TestUtils.renderIntoDocument(
+        <Component filename={filename}
+                   commit={commit}
+                   blob={blob}/>
+      );
+
+      code = TestUtils.findRenderedDOMComponentWithTag(
+        FileView, 'code');
+
+      innerHtml = code.props.dangerouslySetInnerHTML.__html
+      var unchangedLine = innerHtml.split('&#10;')[0],
+          changedLine = innerHtml.split('&#10;')[1];
+
+      expect(unchangedLine).toMatch(
+        /^<span class="unchanged">.*<\/span>$/
+      );
+
+      expect(changedLine).toMatch(
+        /^<span class="changed">.*<\/span>$/
+      );
+
+    });
 
 });

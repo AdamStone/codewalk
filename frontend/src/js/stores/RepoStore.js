@@ -16,7 +16,8 @@ var _dispatchToken,
 var _pending = {
   getCommits: {},
   getTree: {},
-  getBlob: {}
+  getBlob: {},
+  getDiff: {}
 };
 
 
@@ -126,6 +127,25 @@ var RepoStore = _.extend({
     }
   },
 
+  getDiff: function(owner, repoName, baseSha, headSha) {
+
+    var args = Array.prototype.slice.call(arguments)
+      .join('');
+
+    if (!_pending.getDiff[args]) {
+      _pending.getDiff[args] = true;
+
+      Repo = GitHub.getRepo(owner, repoName);
+      Repo.getDiff(baseSha, headSha)
+        .then(function(files) {
+          RepoActions.gotDiff(owner, repoName, headSha, files);
+        })
+        .done(function() {
+          delete _pending.getBlob[args];
+        });
+    }
+  },
+
   emitChange: function() {
     this.emit('change');
   },
@@ -193,6 +213,26 @@ _dispatchToken = AppDispatcher.register(
         target = _getOrInit(owner, repoName);
         var blob = target.repo.objs[sha];
         blob.content = content;
+        break;
+
+
+      case Constants.Repo.GOT_DIFF:
+
+        // data: owner, repo, sha, files
+        var files = data.files;
+
+        target = _getOrInit(owner, repoName);
+        var commit = target.repo.objs[sha];
+        commit.diffed = {};
+
+        files.forEach(function(file) {
+          // file params:
+          //  additions, deletions, changes (int),
+          //  filename, patch, sha,
+          //  status (added, modified, deleted)
+
+          commit.diffed[file.sha] = file;
+        });
         break;
 
 

@@ -1,8 +1,9 @@
 "use strict";
 
 var promisify = require('promisify-node'),
-    GitHub = require('github-api'),
-    Credentials = require('../config/gitignore.credentials');
+    GitHub = require('github-api');
+
+var Credentials = require('../config/gitignore.credentials');
 
 
 var github = new GitHub(Credentials.gitHub);
@@ -15,6 +16,8 @@ module.exports = {
 
     // return object with methods acting on repo
     return {
+
+
 
       getCommits: function(branch) {
         // defaults to master branch
@@ -30,6 +33,8 @@ module.exports = {
             return commits;
           });
       },
+
+
 
       getTree: function(sha) {
         // New objects are saved and sha filesystem
@@ -133,13 +138,25 @@ module.exports = {
           });
       },
 
+
+
       getBlob: function(sha) {
         // return the promise object
         return repo.getBlob(sha)
           .then(function(content) {
             return content;
           });
+      },
+
+
+
+      getDiff: function(baseSha, headSha) {
+        return repo.compare(baseSha, headSha)
+          .then(function(diff) {
+            return diff.files;
+          });
       }
+
     };
   }
 };

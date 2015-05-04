@@ -42,9 +42,18 @@ module.exports = React.createClass({
 
   render: function () {
 
-    var content = this.props.content || '';
+    var blob = this.props.blob,
+        commit = this.props.commit,
+        content = blob.content || '',
+        diff = (commit.diffed &&
+                commit.diffed[blob.sha] || null),
+        patch = (diff && diff.patch || '');
+
     content = encoder.htmlEncode(content);
 
+    if (content) {
+      content = applyPatch(patch, content);
+    }
 
     var lang = null,
         filename = this.props.filename;
@@ -98,3 +107,72 @@ module.exports = React.createClass({
   }
 
 });
+
+
+function applyPatch(patch, content) {
+
+  // parse patch
+  var parsed = patch.split(
+    /@@\ -[0-9]+(?:,[0-9]+)?\ \+([0-9]+)(?:,[0-9]+)?\ @@.*/g
+  );
+  parsed.shift();  // drop initial empty string
+
+  // split file content into lines
+  var fileLines = content.split('&#10;')
+
+  // CHANGED LINES
+  if (parsed.length) {
+    var sections = parsed.length/2;
+
+    // for each @@ section of file patch
+    for (var s=0; s < sections; s++) {
+      var startLine = parsed[2*s + 0] - 1,
+          lines = parsed[2*s + 1]
+
+            // strip leading \n
+            .replace(/^\n/, '')
+
+            // split into lines
+            .split('\n');
+
+      // filter out deletions and end-of-file warning
+      lines = lines.filter(function(line) {
+        if (line[0] === '-' ||
+            line === '\\ No newline at end of file') {
+          return false;
+        }
+        else {
+          return true;
+        }
+      });
+
+      // wrap each changed line in <span class="changed">
+      for (var i=0; i < lines.length; i++) {
+
+        if (lines[i][0] === '+') {
+
+          fileLines[i + startLine] = [
+            '<span class="changed">',
+              fileLines[i + startLine],
+            '</span>'
+          ].join('');
+        }
+      }
+    }
+  }
+
+  // UNCHANGED LINES
+  for (var j=0; j < fileLines.length; j++) {
+
+    if (!fileLines[j].match(/^<span class="changed">/)) {
+
+      fileLines[j] = [
+        '<span class="unchanged">',
+          fileLines[j],
+        '</span>'
+      ].join('');
+    }
+  }
+
+  return fileLines.join('&#10;');
+}

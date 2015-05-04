@@ -42,6 +42,18 @@ module.exports = {
         content: content
       }
     });
+  },
+
+  gotDiff: function(owner, repoName, sha, files) {
+    AppDispatcher.handleServerAction({
+      actionType: Constants.Repo.GOT_DIFF,
+      data: {
+        owner: owner,
+        repoName: repoName,
+        sha: sha,
+        files: files
+      }
+    });
   }
 
 };

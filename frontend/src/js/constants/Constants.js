@@ -7,7 +7,8 @@ module.exports = {
   Repo: keyMirror({
     GOT_COMMITS: null,
     GOT_TREE: null,
-    GOT_BLOB: null
+    GOT_BLOB: null,
+    GOT_DIFF: null
   }),
 
   View: keyMirror({
