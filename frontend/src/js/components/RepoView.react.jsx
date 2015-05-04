@@ -142,6 +142,7 @@ module.exports = React.createClass({
 
           <div className="right-bar">
             <FileTree tree={tree}
+                      expanded={view.expanded}
                       viewing={view.file}
                       repo={repo}/>
           </div>

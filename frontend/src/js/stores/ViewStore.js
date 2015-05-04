@@ -14,7 +14,8 @@ var _dispatchToken,
 var _getInitialState = function() {
   return {
     file: null,
-    checkedOut: 0
+    checkedOut: 0,
+    expanded: {}
   };
 };
 
@@ -62,6 +63,13 @@ _dispatchToken = AppDispatcher.register(
 
         // data: sha
         _data.file = sha;
+        break;
+
+
+      case Constants.View.TOGGLE_FOLDER:
+
+        // data: sha
+        _data.expanded[sha] = !_data.expanded[sha];
         break;
 
 

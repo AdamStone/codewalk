@@ -13,6 +13,7 @@ module.exports = {
 
   View: keyMirror({
     VIEW_FILE: null,
+    TOGGLE_FOLDER: null,
     CHECKOUT: null
   })
 

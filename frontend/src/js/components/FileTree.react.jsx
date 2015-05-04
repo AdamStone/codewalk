@@ -7,21 +7,9 @@ var ViewActions = require('../actions/ViewActions');
 
 module.exports = React.createClass({
 
-  getInitialState: function() {
-    return {
-      expanded: {}
-    };
-  },
-
-
-
   folderClick: function(e) {
-    var expanded = this.state.expanded,
-        sha = e.currentTarget.attributes.name.value;
-    expanded[sha] = !expanded[sha]
-    this.setState({
-      expanded: expanded
-    });
+    var sha = e.currentTarget.attributes.name.value;
+    ViewActions.toggleFolder(sha);
   },
 
 
@@ -86,7 +74,7 @@ function walk(tree, objStore, thisObj) {
     // TREES
     if (obj.type === 'tree') {
       var path = obj.path.split('/'),
-          expanded = thisObj.state.expanded[sha];
+          expanded = thisObj.props.expanded[sha];
 
       var subWalk = walk(obj, objStore, thisObj),
           subTree = subWalk[0],

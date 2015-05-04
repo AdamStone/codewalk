@@ -17,6 +17,18 @@ module.exports = {
 
 
 
+  toggleFolder: function(sha) {
+
+    AppDispatcher.handleViewAction({
+      actionType: Constants.View.TOGGLE_FOLDER,
+      data: {
+        sha: sha
+      }
+    });
+  },
+
+
+
   viewFile: function(sha) {
 
     AppDispatcher.handleViewAction({
