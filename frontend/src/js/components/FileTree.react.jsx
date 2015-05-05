@@ -66,7 +66,9 @@ function walk(tree, diffed, objStore, thisObj) {
         classString += " viewing";
       }
 
-      if (diffed && sha in diffed) {
+      if (diffed && (diffed === 'all' ||
+                     sha in diffed)) {
+
         classString += " changed";
         containsChanged = true;
       }

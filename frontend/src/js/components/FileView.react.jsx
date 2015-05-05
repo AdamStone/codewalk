@@ -44,15 +44,26 @@ module.exports = React.createClass({
 
     var blob = this.props.blob,
         commit = this.props.commit,
-        content = blob.content || '',
-        diff = (commit.diffed &&
-                commit.diffed[blob.sha] || null),
-        patch = (diff && diff.patch || '');
-
-    content = encoder.htmlEncode(content);
+        content = encoder.htmlEncode(
+          blob.content || ''
+        );
 
     if (content) {
-      content = applyPatch(patch, content);
+      if (commit.diffed === 'all') {
+        // first commit
+        content = markAll(content, 'changed');
+      }
+      else {
+        var diff = (commit.diffed && commit.diffed[blob.sha]),
+            patch = (diff && diff.patch);
+
+        if (patch) {
+          content = applyPatch(patch, content);
+        }
+        else {
+          content = markAll(content, 'unchanged');
+        }
+      }
     }
 
     var lang = null,
@@ -81,6 +92,7 @@ module.exports = React.createClass({
                       textShadow: '0 0 1px #000',
                       right: '1.5em',
                       padding: '0.5em',
+                      zIndex: '100',
                       cursor: 'pointer'}}/>
 
         {/* CONTENT */}
@@ -109,6 +121,24 @@ module.exports = React.createClass({
 });
 
 
+function markAll(content, className) {
+
+  // split file content into lines
+  var fileLines = content.split('&#10;');
+
+  for (var j=0; j < fileLines.length; j++) {
+
+    fileLines[j] = [
+      '<span class="' + className + '">',
+        fileLines[j],
+      '</span>'
+    ].join('');
+  }
+
+  return fileLines.join('&#10;');
+}
+
+
 function applyPatch(patch, content) {
 
   // parse patch
@@ -118,7 +148,7 @@ function applyPatch(patch, content) {
   parsed.shift();  // drop initial empty string
 
   // split file content into lines
-  var fileLines = content.split('&#10;')
+  var fileLines = content.split('&#10;');
 
   // CHANGED LINES
   if (parsed.length) {

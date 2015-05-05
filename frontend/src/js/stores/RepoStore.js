@@ -1,18 +1,16 @@
 "use strict";
 
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require('events').EventEmitter,
+    _ = require('lodash');
 
 var AppDispatcher = require('../dispatcher/AppDispatcher'),
     Constants = require('../constants/Constants'),
     RepoActions = require('../actions/RepoActions'),
-    Server = require('../utils/ServerAPI'),
-//    GitHub = require('../utils/GitHubAPI'),
-    _ = require('lodash');
+    Server = require('../utils/ServerAPI');
 
 
 var _dispatchToken,
-    _data,
-    Repo;
+    _data;
 
 var _pending = {
   getCommits: {},
@@ -97,7 +95,6 @@ var RepoStore = _.extend({
     if (!_pending.getTree[args]) {
       _pending.getTree[args] = true;
 
-      console.log(sha);
       Server.getTree(owner, repoName, sha)
         .then(function(tree) {
           RepoActions.gotTree(owner, repoName, tree);
@@ -139,7 +136,7 @@ var RepoStore = _.extend({
           RepoActions.gotDiff(owner, repoName, headSha, files);
         })
         .done(function() {
-          delete _pending.getBlob[args];
+          delete _pending.getDiff[args];
         });
     }
   },
@@ -163,21 +160,24 @@ var RepoStore = _.extend({
 _dispatchToken = AppDispatcher.register(
   function(payload) {
 
+    // payload data vars
     var action = payload.action,
         data = action.data,
         owner = data.owner,
         repoName = data.repoName,
         branch = data.branch,
+        content = data.content,
+        tree = data.tree,
+        commits = data.commits,
+        files = data.files,
         sha = data.sha;
 
-
-    var target;
+    var target, commit, blob;
     switch(action.actionType) {
 
       case Constants.Repo.GOT_COMMITS:
 
         // data: owner, repo, commits, branch
-        var commits = data.commits;
 
         target = _getOrInit(owner, repoName, branch);
         var commitSha = commits.map(
@@ -186,7 +186,10 @@ _dispatchToken = AppDispatcher.register(
           }
         );
         target.branch.commits = commitSha;
-        commits.forEach(function(commit) {
+        commits.forEach(function(commit, index) {
+          if (index === 0) {
+            commit.commit.diffed = 'all';
+          }
           target.repo.objs[commit.sha] = commit;
         });
 
@@ -196,7 +199,6 @@ _dispatchToken = AppDispatcher.register(
       case Constants.Repo.GOT_TREE:
 
         // data: owner, repo, tree
-        var tree = data.tree;
 
         target = _getOrInit(owner, repoName);
         _.extend(target.repo.objs, tree.objs);
@@ -206,10 +208,9 @@ _dispatchToken = AppDispatcher.register(
       case Constants.Repo.GOT_BLOB:
 
         // data: owner, repo, sha, content
-        var content = data.content;
 
         target = _getOrInit(owner, repoName);
-        var blob = target.repo.objs[sha];
+        blob = target.repo.objs[sha];
         blob.content = content;
         break;
 
@@ -217,20 +218,19 @@ _dispatchToken = AppDispatcher.register(
       case Constants.Repo.GOT_DIFF:
 
         // data: owner, repo, sha, files
-        var files = data.files;
 
         target = _getOrInit(owner, repoName);
-        var commit = target.repo.objs[sha].commit;
+        commit = target.repo.objs[sha].commit;
         commit.diffed = {};
 
-        files.forEach(function(file) {
-          // file params:
-          //  additions, deletions, changes (int),
-          //  filename, patch, sha,
-          //  status (added, modified, deleted)
+          files.forEach(function(file) {
+            // file params:
+            //  additions, deletions, changes (int),
+            //  filename, patch, sha,
+            //  status (added, modified, deleted)
 
-          commit.diffed[file.sha] = file;
-        });
+            commit.diffed[file.sha] = file;
+          });
         break;
 
 

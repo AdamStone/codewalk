@@ -89,15 +89,18 @@ module.exports = React.createClass({
         // commits have loaded, but not trees
         RepoStore.getTree(repo.owner, repo.name, sha);
       }
+      else {
 
-      // get diff if missing
-      if (checkedOut > 0 && !commits[checkedOut].diffed) {
+        // get diff if missing
+        if (checkedOut > 0 && !commits[checkedOut].diffed) {
 
-        RepoStore.getDiff(repo.owner, repo.name,
-          commits[checkedOut-1].sha,  // base
-          commits[checkedOut].sha);   // head
+          var head = commits[checkedOut].sha,
+              base = commits[checkedOut-1].sha;
+
+          RepoStore.getDiff(repo.owner, repo.name,
+                              base, head);
+        }
       }
-
     }
     else {
 
