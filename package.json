@@ -14,6 +14,7 @@
       "jsx"
     ],
     "testPathDirs": [
+      "./backend/app",
       "./frontend/src/js"
     ],
     "scriptPreprocessor": "./preprocessor.js",
@@ -31,13 +32,15 @@
     "github-api": "^0.10.4",
     "hapi": "^8.4.0",
     "highlight.js": "^8.5.0",
+    "joi": "^6.4.1",
     "lodash": "^3.7.0",
     "node-html-encoder": "0.0.2",
     "nodegit": "^0.3.3",
     "promisify-node": "^0.1.5",
     "react": "^0.13.1",
     "react-treeview": "^0.3.11",
-    "remarkable": "^1.6.0"
+    "remarkable": "^1.6.0",
+    "superagent": "^1.2.0"
   },
   "devDependencies": {
     "colors": "^1.0.3",

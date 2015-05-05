@@ -1,13 +1,12 @@
-jest.dontMock('../GitHubAPI');
+jest.dontMock('../http-handlers');
 
-var GitHub, repo, sha, key;
+var promisify, handlers, sha, key, fn;
 
 
 describe('getCommits', function() {
   beforeEach(function() {
-    GitHub = require('../GitHubAPI');
-    repo = GitHub.getRepo("AdamStone", "xrd-plot");
-    sha = "5d483de3f14e217e3b23ac21ca13ac65e894fc46";
+    handlers = require('../http-handlers');
+    promisify = require('promisify-node');
   });
 
 
@@ -16,7 +15,21 @@ describe('getCommits', function() {
 
     function() {
 
-      return repo.getCommits()
+      var request = {
+        params: {
+          owner: 'AdamStone',
+          repo: 'xrd-plot'
+        }
+      };
+
+      // use promises / wrapper to deal with async
+      fn = promisify(function(callback) {
+        handlers.getCommits(request, function(result) {
+          return callback(null, result);
+        });
+      });
+
+      return fn()
         .then(function(commits) {
           expect(commits.length).toBeTruthy();
           commits.forEach(function(commit) {
@@ -31,8 +44,9 @@ describe('getCommits', function() {
 
 describe('getTree', function() {
   beforeEach(function() {
-    GitHub = require('../GitHubAPI');
-    repo = GitHub.getRepo("AdamStone", "xrd-plot");
+    handlers = require('../http-handlers');
+    promisify = require('promisify-node');
+    sha = "5d483de3f14e217e3b23ac21ca13ac65e894fc46";
   });
 
 
@@ -41,7 +55,21 @@ describe('getTree', function() {
 
     function() {
 
-      return repo.getTree(sha)
+      var request = {
+        params: {
+          owner: 'AdamStone',
+          repo: 'xrd-plot',
+          sha: sha
+        }
+      };
+
+      fn = promisify(function(callback) {
+        handlers.getTree(request, function(result) {
+          return callback(null, result);
+        });
+      });
+
+      return fn()
         .then(function(tree) {
 
           // check recursively
@@ -52,10 +80,11 @@ describe('getTree', function() {
 });
 
 
+
 describe('getBlob', function() {
   beforeEach(function() {
-    GitHub = require('../GitHubAPI');
-    repo = GitHub.getRepo("AdamStone", "xrd-plot");
+    handlers = require('../http-handlers');
+    promisify = require('promisify-node');
     sha = "b512c09d476623ff4bf8d0d63c29b784925dbdf8";
   });
 
@@ -65,7 +94,21 @@ describe('getBlob', function() {
 
     function() {
 
-      return repo.getBlob(sha)
+      var request = {
+        params: {
+          owner: 'AdamStone',
+          repo: 'xrd-plot',
+          sha: sha
+        }
+      };
+
+      fn = promisify(function(callback) {
+        handlers.getBlob(request, function(result) {
+          return callback(null, result);
+        });
+      });
+
+      return fn()
         .then(function(content) {
           expect(content).toBe('node_modules');
         });

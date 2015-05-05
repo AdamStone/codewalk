@@ -3,6 +3,8 @@
 var Hapi = require('hapi'),
     Path = require('path');
 
+var routes = require('./routes/http-routes');
+
 var staticPath = Path.join(__dirname, '..', '..',
                            'frontend', 'public');
 
@@ -13,5 +15,10 @@ server.connection({
 });
 
 server.path(staticPath);
+
+
+routes.forEach(function(route) {
+  server.route(route);
+});
 
 module.exports = server;

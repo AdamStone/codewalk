@@ -5,7 +5,8 @@ var EventEmitter = require('events').EventEmitter;
 var AppDispatcher = require('../dispatcher/AppDispatcher'),
     Constants = require('../constants/Constants'),
     RepoActions = require('../actions/RepoActions'),
-    GitHub = require('../utils/GitHubAPI'),
+    Server = require('../utils/ServerAPI'),
+//    GitHub = require('../utils/GitHubAPI'),
     _ = require('lodash');
 
 
@@ -77,8 +78,7 @@ var RepoStore = _.extend({
     if (!_pending.getCommits[args]) {
       _pending.getCommits[args] = true;
 
-      Repo = GitHub.getRepo(owner, repoName);
-      Repo.getCommits(branch)
+      Server.getCommits(owner, repoName, branch)
         .then(function(commits) {
           RepoActions.gotCommits(
             owner, repoName, commits, branch);
@@ -97,8 +97,8 @@ var RepoStore = _.extend({
     if (!_pending.getTree[args]) {
       _pending.getTree[args] = true;
 
-      Repo = GitHub.getRepo(owner, repoName);
-      Repo.getTree(sha)
+      console.log(sha);
+      Server.getTree(owner, repoName, sha)
         .then(function(tree) {
           RepoActions.gotTree(owner, repoName, tree);
         })
@@ -116,8 +116,7 @@ var RepoStore = _.extend({
     if (!_pending.getBlob[args]) {
       _pending.getBlob[args] = true;
 
-      Repo = GitHub.getRepo(owner, repoName);
-      Repo.getBlob(sha)
+      Server.getBlob(owner, repoName, sha)
         .then(function(content) {
           RepoActions.gotBlob(owner, repoName, sha, content);
         })
@@ -135,8 +134,7 @@ var RepoStore = _.extend({
     if (!_pending.getDiff[args]) {
       _pending.getDiff[args] = true;
 
-      Repo = GitHub.getRepo(owner, repoName);
-      Repo.getDiff(baseSha, headSha)
+      Server.getDiff(owner, repoName, baseSha, headSha)
         .then(function(files) {
           RepoActions.gotDiff(owner, repoName, headSha, files);
         })
