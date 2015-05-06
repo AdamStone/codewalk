@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var RepoList = require('./components/RepoList.react.jsx'),
+var LandingPage = require('./components/LandingPage.react.jsx'),
     RepoView = require('./components/RepoView.react.jsx');
 
 var Router = require('react-router'),
@@ -22,7 +22,7 @@ var App = React.createClass({
 
 var routes = (
   <Route name="app" path="/" handler={App}>
-    <DefaultRoute handler={RepoList}/>
+    <DefaultRoute handler={LandingPage}/>
     <Route name="repo" path=":owner/:repo" handler={RepoView}/>
     <Route name="branch" path=":owner/:repo/:branch" handler={RepoView}/>
   </Route>

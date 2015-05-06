@@ -28,6 +28,7 @@
     "height": 500
   },
   "dependencies": {
+    "boom": "^2.7.1",
     "flux": "^2.0.1",
     "github-api": "^0.10.4",
     "hapi": "^8.4.0",

@@ -1,0 +1,29 @@
+.landing-page {
+  height: 100%;
+  text-align: center;
+
+  .header {
+    padding: 0.5em;
+    margin: 0;
+  }
+
+  .github-icon {
+    font-size: 7em;
+  }
+
+  .repo-url-input {
+    font-family: $font-family-monospace;
+    width: 66%;
+    font-size: 14px;
+    height: 38px;
+    padding: 6px 10px;
+    margin-bottom: 1rem;
+    vertical-align: top;
+    border-radius: 0;
+  }
+
+  button {
+    font-size: 13px;
+    border-radius: 0;
+  }
+}
