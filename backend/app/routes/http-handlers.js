@@ -1,7 +1,8 @@
 "use strict";
 
 var promisify = require('promisify-node'),
-    GitHub = require('github-api');
+    GitHub = require('github-api'),
+    Boom = require('boom');
 
 var Credentials = require('../config/gitignore.credentials');
 
@@ -27,11 +28,11 @@ module.exports = {
 
     repo.getCommits(branch)
       .then(function(commits) {
-
         // make oldest come first
         commits.reverse();
         return reply(commits);
-      }).done();
+      }, errorHandler.bind({reply: reply}))
+      .done();
   },
 
 
@@ -140,7 +141,8 @@ module.exports = {
           fileSystem: fileSystem,
           objs: objs
         });
-      }).done();
+      }, errorHandler.bind({reply: reply}))
+      .done();
   },
 
 
@@ -157,7 +159,8 @@ module.exports = {
     repo.getBlob(sha)
       .then(function(content) {
         return reply(content);
-      }).done();
+      }, errorHandler.bind({reply: reply}))
+      .done();
   },
 
 
@@ -175,7 +178,8 @@ module.exports = {
     repo.compare(baseSha, headSha)
       .then(function(diff) {
         return reply(diff.files);
-      }).done();
+      }, errorHandler.bind({reply: reply}))
+      .done();
   }
 };
 
@@ -193,4 +197,20 @@ function getChildrenSha(currentDir) {
     children.push(sha);
   });
   return children;
+}
+
+
+function errorHandler(err) {
+  if (err && err.error === 404) {
+    return this.reply(
+      Boom.notFound(
+        "The requested repo could not be found"
+      )
+    );
+  }
+  if (err) {
+    return this.reply(
+      Boom.badImplementation()
+    );
+  }
 }

@@ -80,7 +80,7 @@ var RepoStore = _.extend({
         .then(function(commits) {
           RepoActions.gotCommits(
             owner, repoName, commits, branch);
-        })
+        }, errorHandler)
         .done(function() {
           delete _pending.getCommits[args];
         });
@@ -98,7 +98,7 @@ var RepoStore = _.extend({
       Server.getTree(owner, repoName, sha)
         .then(function(tree) {
           RepoActions.gotTree(owner, repoName, tree);
-        })
+        }, errorHandler)
         .done(function() {
           delete _pending.getTree[args];
         });
@@ -116,7 +116,7 @@ var RepoStore = _.extend({
       Server.getBlob(owner, repoName, sha)
         .then(function(content) {
           RepoActions.gotBlob(owner, repoName, sha, content);
-        })
+        }, errorHandler)
         .done(function() {
           delete _pending.getBlob[args];
         });
@@ -134,7 +134,7 @@ var RepoStore = _.extend({
       Server.getDiff(owner, repoName, baseSha, headSha)
         .then(function(files) {
           RepoActions.gotDiff(owner, repoName, headSha, files);
-        })
+        }, errorHandler)
         .done(function() {
           delete _pending.getDiff[args];
         });
@@ -243,3 +243,9 @@ _dispatchToken = AppDispatcher.register(
   });
 
 module.exports = RepoStore;
+
+
+function errorHandler(err) {
+  // TODO display errors
+  console.log(JSON.parse(err.response.text));
+}
