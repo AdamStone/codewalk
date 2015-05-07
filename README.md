@@ -8,7 +8,7 @@ This can be useful for any project, but its main motivation is to leverage git a
 
 ## Demo
 
-Coming soon.
+[Try it!](http://52.24.224.179/)
 
 ## Screenshots
 
