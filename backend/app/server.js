@@ -10,7 +10,6 @@ var staticPath = Path.join(__dirname, '..', '..',
 
 var server = new Hapi.Server();
 server.connection({
-  host: 'localhost',
   port: 5000
 });
 
