@@ -109,7 +109,7 @@ module.exports = React.createClass({
     }
 
     // VIEW STATE
-    var fileView;
+    var fileView = null;
     if (view.file && repo.objs) {
       // repo is initialized and file has been requested
 
@@ -119,9 +119,13 @@ module.exports = React.createClass({
 
         // optimistically show FileView to prevent flicker
         var filename = blob.path.split('/').reverse()[0];
-        fileView = <FileView filename={filename}
-                             commit={commit}
-                             blob={blob}/>;
+        fileView = (
+          <div className="scroller">
+            <FileView filename={filename}
+                      commit={commit}
+                      blob={blob}/>
+          </div>
+        );
 
         if (typeof blob.content === 'undefined') {
           // blob is missing content
@@ -144,7 +148,10 @@ module.exports = React.createClass({
           </div>
 
           <div className="content-view">
-            {fileView || <CommitMessage markdown={message}/>}
+            <div className="scroller">
+              <CommitMessage markdown={message}/>
+            </div>
+            {fileView}
           </div>
 
           <div className="right-bar">

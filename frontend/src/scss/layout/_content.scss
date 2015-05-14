@@ -17,4 +17,10 @@
     width: $right-bar-width;
     background-color: $right-bar-bg;
   }
+
+  .scroller {
+    height: 100%;
+    overflow: auto;
+    @include pos(a, 0 0 0 0);
+  }
 }
