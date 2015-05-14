@@ -1,5 +1,8 @@
 jest.dontMock('../CommitList.react.jsx');
 
+// globals
+_ = require('lodash');
+
 var React, TestUtils, Component, CommitList, ViewActions,
     RepoStore, repo, commitSha, commits, listNodes;
 

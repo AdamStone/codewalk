@@ -56,6 +56,13 @@ module.exports = function(grunt) {
       }
     },
 
+    uglify: {
+      build: {
+        src: 'frontend/public/bundle.js',
+        dest: 'frontend/public/bundle.min.js'
+      }
+    },
+
     watch: {
       options: {
         livereload: true
@@ -89,6 +96,11 @@ module.exports = function(grunt) {
                 '!frontend/src/**/__mocks__/*.js',
                 '!frontend/src/**/__mocks__/*.jsx'],
         tasks: 'browserify'
+      },
+
+      uglify: {
+        files: ['frontend/public/bundle.js'],
+        tasks: 'uglify'
       },
 
       html: {
@@ -150,7 +162,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-' + grunts[i]);
   }
 
-  grunt.registerTask('default', ['copy', 'sass', 'cssmin', 'browserify']);
+  grunt.registerTask('default', [
+    'copy',
+    'sass',
+    'cssmin',
+    'browserify',
+    'uglify'
+  ]);
 
   grunt.registerTask('serve', function() {
     grunt.task.run([

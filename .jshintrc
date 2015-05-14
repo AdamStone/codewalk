@@ -2,6 +2,6 @@
   "node": true,
   "jsx": true,
   "browserify": true,
-  "predef": ["$", "window", "sessionStorage", "io", "jest", "describe", "beforeEach", "it", "pit", "expect", "waitsFor", "runs"],
-  "globals": ["$", "window", "sessionStorage", "io", "jest", "describe", "beforeEach", "it", "pit", "expect", "waitsFor", "runs"]
+  "predef": ["$", "window", "sessionStorage", "io", "jest", "describe", "beforeEach", "it", "pit", "expect", "waitsFor", "runs", "_"],
+  "globals": ["$", "window", "sessionStorage", "io", "jest", "describe", "beforeEach", "it", "pit", "expect", "waitsFor", "runs", "_"]
 }

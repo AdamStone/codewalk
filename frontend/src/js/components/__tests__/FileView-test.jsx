@@ -1,5 +1,9 @@
 jest.dontMock('../FileView.react.jsx');
 
+// globals
+_ = require('lodash');
+hljs = require('highlight.js');
+
 var React, TestUtils, Component, FileView, ViewActions,
     filename, blob, commit, code, innerHtml, Encoder, encoder,
     RepoStore, repo;
@@ -163,3 +167,4 @@ describe('FileView', function() {
     });
 
 });
+

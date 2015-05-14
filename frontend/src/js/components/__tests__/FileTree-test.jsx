@@ -1,5 +1,8 @@
 jest.dontMock('../FileTree.react.jsx');
 
+// globals
+_ = require('lodash');
+
 var React, TestUtils, Component, FileTree, RepoStore,
     ViewActions, repo, tree, div, folder, files, children;
 

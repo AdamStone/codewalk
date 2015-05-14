@@ -1,52 +1,76 @@
 "use strict";
 
 var request = require('superagent'),
-    promisify = require('promisify-node');
+    Promise = require('promise');
 
-module.exports = promisify({
+module.exports = {
 
-  getCommits: function(owner, repo, branch, callback) {
-    request
-      .get(['', owner, repo, 'commits', branch].join('/'))
-      .end(function(err, result) {
-        if (err) {
-          return callback(err);
-        }
-        return callback(null, JSON.parse(result.text));
-      });
+  getCommits: function(owner, repo, branch) {
+    return new Promise(function(resolve, reject) {
+
+      request
+        .get(['', owner, repo, 'commits', branch].join('/'))
+        .end(function(err, result) {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(JSON.parse(result.text));
+          }
+        });
+
+    });
   },
 
-  getTree: function(owner, repo, sha, callback) {
-    request
-      .get(['', owner, repo, 'tree', sha].join('/'))
-      .end(function(err, result) {
-        if (err) {
-          return callback(err);
-        }
-        return callback(null, JSON.parse(result.text));
-      });
+  getTree: function(owner, repo, sha) {
+    return new Promise(function(resolve, reject) {
+
+      request
+        .get(['', owner, repo, 'tree', sha].join('/'))
+        .end(function(err, result) {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(JSON.parse(result.text));
+          }
+        });
+
+    });
   },
 
-  getBlob: function(owner, repo, sha, callback) {
-    request
-      .get(['', owner, repo, 'blob', sha].join('/'))
-      .end(function(err, result) {
-        if (err) {
-          return callback(err);
-        }
-        return callback(null, result.text);
-      });
+  getBlob: function(owner, repo, sha) {
+    return new Promise(function(resolve, reject) {
+
+      request
+        .get(['', owner, repo, 'blob', sha].join('/'))
+        .end(function(err, result) {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(result.text);
+          }
+        });
+
+    });
   },
 
-  getDiff: function(owner, repo, baseSha, headSha, callback) {
-    request
-      .get(['', owner, repo, 'diff', baseSha, headSha].join('/'))
-      .end(function(err, result) {
-        if (err) {
-          return callback(err);
-        }
-        return callback(null, JSON.parse(result.text));
-      });
+  getDiff: function(owner, repo, baseSha, headSha) {
+    return new Promise(function(resolve, reject) {
+
+      request
+        .get(['', owner, repo, 'diff', baseSha, headSha].join('/'))
+        .end(function(err, result) {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(JSON.parse(result.text));
+          }
+        });
+
+    });
   }
 
-});
+};

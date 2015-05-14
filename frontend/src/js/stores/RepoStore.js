@@ -1,7 +1,6 @@
 "use strict";
 
-var EventEmitter = require('events').EventEmitter,
-    _ = require('lodash');
+var EventEmitter = require('events').EventEmitter;
 
 var AppDispatcher = require('../dispatcher/AppDispatcher'),
     Constants = require('../constants/Constants'),
@@ -75,7 +74,6 @@ var RepoStore = _.extend({
 
     if (!_pending.getCommits[args]) {
       _pending.getCommits[args] = true;
-
       Server.getCommits(owner, repoName, branch)
         .then(function(commits) {
           RepoActions.gotCommits(

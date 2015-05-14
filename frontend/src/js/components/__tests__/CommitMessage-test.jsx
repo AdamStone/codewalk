@@ -1,5 +1,8 @@
 jest.dontMock('../CommitMessage.react.jsx');
 
+// globals
+_ = require('lodash');
+
 var React, TestUtils, Component, CommitMessage,
     markdown, rendered;
 

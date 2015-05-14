@@ -1,6 +1,9 @@
 jest.dontMock('../RepoView.react.jsx');
 jest.dontMock('../../utils/mockRouter.jsx');
 
+// globals
+_ = require('lodash');
+
 var React, TestUtils, Component, RepoView,
     Router, App, RepoStore, ViewStore, mockRouter;
 

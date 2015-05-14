@@ -2,8 +2,7 @@
 
 var React = require('react');
 
-var RepoStore = require('../stores/RepoStore'),
-    ViewActions = require('../actions/ViewActions');
+var ViewActions = require('../actions/ViewActions');
 
 module.exports = React.createClass({
 

@@ -3,8 +3,7 @@
 var EventEmitter = require('events').EventEmitter;
 
 var AppDispatcher = require('../dispatcher/AppDispatcher'),
-    Constants = require('../constants/Constants'),
-    _ = require('lodash');
+    Constants = require('../constants/Constants');
 
 
 

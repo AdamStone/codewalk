@@ -1,8 +1,7 @@
 "use strict";
 
 var React = require('react'),
-    Encoder = require('node-html-encoder').Encoder,
-    hljs = require('highlight.js');
+    Encoder = require('node-html-encoder').Encoder;
 
 var RepoStore = require('../stores/RepoStore'),
     ViewActions = require('../actions/ViewActions');
