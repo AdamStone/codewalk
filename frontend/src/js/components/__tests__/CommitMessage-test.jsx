@@ -40,7 +40,7 @@ describe('CommitMessage', function() {
 
       markdown = [
         'commit header',
-        '=======',
+        '',
         'commit body',
       ].join('\n');
 
