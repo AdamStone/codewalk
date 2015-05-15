@@ -5,3 +5,9 @@ body {
 li {
   list-style: none;
 }
+
+// hljs sets 0.5 which stacks with diff styling
+// to become almost unreadable
+.coffeescript .javascript, .javascript .xml, .tex .hljs-formula, .xml .css, .xml .hljs-cdata, .xml .javascript, .xml .vbscript {
+  opacity: 1 !important;
+}
