@@ -29,7 +29,7 @@ describe('CommitList', function() {
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
-        <Component commits={commits}/>
+        <Component repo={repo} commits={commits}/>
       );
       listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
@@ -46,7 +46,7 @@ describe('CommitList', function() {
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
-        <Component commits={commits}/>
+        <Component repo={repo} commits={commits}/>
       );
       listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
@@ -61,7 +61,7 @@ describe('CommitList', function() {
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
-        <Component commits={commits} checkedOut={0}/>
+        <Component repo={repo} commits={commits} checkedOut={0}/>
       );
 
       listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
@@ -79,7 +79,7 @@ describe('CommitList', function() {
     function() {
 
       CommitList = TestUtils.renderIntoDocument(
-        <Component commits={commits} checkedOut={1}/>
+        <Component repo={repo} commits={commits} checkedOut={1}/>
       );
       listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');

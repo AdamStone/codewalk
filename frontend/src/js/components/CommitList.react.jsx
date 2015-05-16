@@ -18,7 +18,10 @@ module.exports = React.createClass({
   checkout: function(commitIndex) {
 
     if (commitIndex !== this.props.checkedOut) {
-      ViewActions.checkout(commitIndex);
+      var repo = this.props.repo,
+          sha = this.props.commits[commitIndex].sha;
+      ViewActions.checkout(repo.owner, repo.name,
+                           commitIndex, sha);
     }
   },
 

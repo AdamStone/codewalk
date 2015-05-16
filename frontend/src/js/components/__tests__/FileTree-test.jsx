@@ -1,4 +1,5 @@
 jest.dontMock('../FileTree.react.jsx');
+jest.dontMock('../../utils/WalkerFactory');
 
 // globals
 _ = require('lodash');

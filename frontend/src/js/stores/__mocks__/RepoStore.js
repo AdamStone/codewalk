@@ -91,7 +91,7 @@ function get() {
                 sha: 'tree diff sha'
               }
             },
-            diffed: {
+            changed: {
               'changed blob sha': {
                 patch: [
                   '@@ -1,2 +1,2 @@',

@@ -5,12 +5,15 @@ var AppDispatcher = require('../dispatcher/AppDispatcher'),
 
 module.exports = {
 
-  checkout: function(commitIndex) {
+  checkout: function(owner, repoName, commitIndex, sha) {
 
     AppDispatcher.handleViewAction({
       actionType: Constants.View.CHECKOUT,
       data: {
-        commitIndex: commitIndex
+        owner: owner,
+        repoName: repoName,
+        commitIndex: commitIndex,
+        sha: sha
       }
     });
   },

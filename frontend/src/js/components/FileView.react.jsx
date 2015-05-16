@@ -48,12 +48,12 @@ module.exports = React.createClass({
         );
 
     if (content) {
-      if (commit.diffed === 'all') {
+      if (commit.changed === 'all') {
         // first commit
         content = markAll(content, 'changed');
       }
       else {
-        var diff = (commit.diffed && commit.diffed[blob.sha]),
+        var diff = (commit.changed && commit.changed[blob.sha]),
             patch = (diff && diff.patch);
 
         if (patch) {

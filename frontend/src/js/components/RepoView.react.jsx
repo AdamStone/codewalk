@@ -64,7 +64,7 @@ module.exports = React.createClass({
         commit = null,
         sha = null,
         tree = null,
-        diffed = {},
+        changed = {},
         message = '';
 
     // get commits, if repo known
@@ -80,7 +80,7 @@ module.exports = React.createClass({
     if (commits.length) {
       commit = commits[checkedOut].commit;
       sha = commit.tree.sha;
-      diffed = commit.diffed;
+      changed = commit.changed;
       message = commit.message;
 
       tree = repo.objs[sha];
@@ -92,7 +92,7 @@ module.exports = React.createClass({
       else {
 
         // get diff if missing
-        if (checkedOut > 0 && !commits[checkedOut].diffed) {
+        if (checkedOut > 0 && !commits[checkedOut].commit.changed) {
 
           var head = commits[checkedOut].sha,
               base = commits[checkedOut-1].sha;
@@ -143,8 +143,9 @@ module.exports = React.createClass({
         <div className="content">
 
           <div className="left-bar">
-            <CommitList commits={commits}
-                        checkedOut={checkedOut}/>
+          <CommitList repo={repo}
+                      commits={commits}
+                      checkedOut={checkedOut}/>
           </div>
 
           <div className="content-view">
@@ -156,7 +157,7 @@ module.exports = React.createClass({
 
           <div className="right-bar">
             <FileTree tree={tree}
-                      diffed={diffed}
+                      changed={changed}
                       expanded={view.expanded}
                       viewing={view.file}
                       repo={repo}/>

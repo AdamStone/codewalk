@@ -65,6 +65,10 @@ var RepoStore = _.extend({
     return _data;
   },
 
+  getDispatchToken: function() {
+    return _dispatchToken;
+  },
+
   getCommits: function(owner, repoName, branch) {
     branch = typeof branch !== 'undefined' ?
                         branch : 'master';
@@ -175,7 +179,7 @@ _dispatchToken = AppDispatcher.register(
 
       case Constants.Repo.GOT_COMMITS:
 
-        // data: owner, repo, commits, branch
+        // data: owner, repoName, commits, branch
 
         target = _getOrInit(owner, repoName, branch);
         var commitSha = commits.map(
@@ -186,7 +190,7 @@ _dispatchToken = AppDispatcher.register(
         target.branch.commits = commitSha;
         commits.forEach(function(commit, index) {
           if (index === 0) {
-            commit.commit.diffed = 'all';
+            commit.commit.changed = 'all';
           }
           target.repo.objs[commit.sha] = commit;
         });
@@ -196,7 +200,7 @@ _dispatchToken = AppDispatcher.register(
 
       case Constants.Repo.GOT_TREE:
 
-        // data: owner, repo, tree
+        // data: owner, repoName, tree
 
         target = _getOrInit(owner, repoName);
         _.extend(target.repo.objs, tree.objs);
@@ -205,7 +209,7 @@ _dispatchToken = AppDispatcher.register(
 
       case Constants.Repo.GOT_BLOB:
 
-        // data: owner, repo, sha, content
+        // data: owner, repoName, sha, content
 
         target = _getOrInit(owner, repoName);
         blob = target.repo.objs[sha];
@@ -215,11 +219,11 @@ _dispatchToken = AppDispatcher.register(
 
       case Constants.Repo.GOT_DIFF:
 
-        // data: owner, repo, sha, files
+        // data: owner, repoName, sha, files
 
         target = _getOrInit(owner, repoName);
         commit = target.repo.objs[sha].commit;
-        commit.diffed = {};
+        commit.changed = {};
 
           files.forEach(function(file) {
             // file params:
@@ -227,7 +231,7 @@ _dispatchToken = AppDispatcher.register(
             //  filename, patch, sha,
             //  status (added, modified, deleted)
 
-            commit.diffed[file.sha] = file;
+            commit.changed[file.sha] = file;
           });
         break;
 

@@ -3,7 +3,8 @@
 var React = require('react'),
     TreeView = require('react-treeview');
 
-var ViewActions = require('../actions/ViewActions');
+var ViewActions = require('../actions/ViewActions'),
+    walkerFactory = require('../utils/WalkerFactory');
 
 module.exports = React.createClass({
 
@@ -24,115 +25,110 @@ module.exports = React.createClass({
   render: function() {
 
     var tree = this.props.tree,
-        diffed = this.props.diffed,
+        changed = this.props.changed,
         viewing = this.props.viewing,
-        repo = this.props.repo;
+        expanded = this.props.expanded,
+        repo = this.props.repo,
+        fileClick = this.fileClick,
+        folderClick = this.folderClick;
 
-    var view = null;
+    var treeView = null;
     if (tree) {
-      // build file structure recursively
-      view = walk(tree, diffed, repo.objs, this)[0];
+
+      // walk tree to build JSX
+
+      var walker = walkerFactory(tree, repo.objs);
+
+      walker.onBlob = function(obj) {
+
+        // build blob JSX
+
+        var sha = obj.sha,
+            path = obj.path.split('/'),
+            filename = path[path.length - 1],
+            viewingThis = (sha === viewing);
+
+        var classString = "file";
+
+        if (viewingThis) {
+          this.containsViewing = true;
+          classString += " viewing";
+        }
+
+        if (changed && (changed === 'all' ||
+                       sha in changed)) {
+
+          classString += " changed";
+          this.containsChanged = true;
+        }
+
+        return (
+          <div key={sha}
+               name={sha}
+               className={classString}
+               onClick={fileClick}>
+            {filename}
+          </div>
+        );
+      };
+
+
+      walker.onTree = function(obj, subWalker) {
+
+        // build tree JSX
+
+        var sha = obj.sha,
+            path = obj.path.split('/'),
+            isExpanded = expanded[sha];
+
+        var subTreeView = subWalker.walk();
+
+        var labelClass = "folder";
+
+        if (subWalker.containsViewing) {
+          this.containsViewing = true;
+
+          // Color folder if collapsed and contains viewing
+          if (!isExpanded) {
+            labelClass += " viewing";
+          }
+        }
+
+        if (subWalker.containsChanged) {
+          this.containsChanged = true;
+
+          // Color folder if collapsed and contains changed
+          if (!isExpanded) {
+            labelClass += " changed";
+          }
+        }
+
+        labelClass += (isExpanded ? " expanded" : "");
+
+        var nodeLabel = (
+          <span name={sha}
+                onClick={folderClick}
+                className={labelClass}>
+            {path[path.length - 1]}
+          </span>
+        );
+
+        return (
+          <TreeView key={sha}
+                    collapsed={!isExpanded}
+                    nodeLabel={nodeLabel}>
+            {subTreeView}
+          </TreeView>
+        );
+      };
+
+      treeView = walker.walk();
     }
 
     return (
       <div className="file-tree">
-        {view}
+        {treeView}
       </div>
     );
   }
 });
-
-
-
-function walk(tree, diffed, objStore, thisObj) {
-
-  // track whether tree contains a file being viewed
-  var containsViewing = false,
-      containsChanged = false;
-
-  var mapped = tree.children.map(function(sha) {
-    var obj = objStore[sha];
-
-    // BLOBS
-    if (obj.type === 'blob') {
-      var path = obj.path.split('/'),
-          filename = path[path.length - 1],
-          viewing = thisObj.props.viewing === sha;
-
-      var classString = "file";
-
-      if (viewing) {
-        containsViewing = true;
-        classString += " viewing";
-      }
-
-      if (diffed && (diffed === 'all' ||
-                     sha in diffed)) {
-
-        classString += " changed";
-        containsChanged = true;
-      }
-
-      return (
-        <div key={sha}
-             name={sha}
-             className={classString}
-             onClick={thisObj.fileClick}>
-          {filename}
-        </div>
-      );
-    }
-
-    // TREES
-    if (obj.type === 'tree') {
-      var path = obj.path.split('/'),
-          expanded = thisObj.props.expanded[sha];
-
-      var subWalk = walk(obj, diffed, objStore, thisObj),
-          subTree = subWalk[0],
-          subViewing = subWalk[1],
-          subChanged = subWalk[2];
-
-      var labelClass = "folder";
-
-      if (subViewing) {
-        containsViewing = true;
-
-        // Color folder if collapsed and contains viewing
-        if (!expanded) {
-          labelClass += " viewing";
-        }
-      }
-
-      if (subChanged) {
-        containsChanged = true;
-
-        // Color folder if collapsed and contains changed
-        if (!expanded) {
-          labelClass += " changed";
-        }
-      }
-
-      labelClass += (expanded ? " expanded" : "");
-
-      var nodeLabel = (
-        <span name={sha}
-              onClick={thisObj.folderClick}
-              className={labelClass}>
-          {path[path.length - 1]}
-        </span>
-      );
-
-      return (
-        <TreeView key={sha}
-                  collapsed={!expanded}
-                  nodeLabel={nodeLabel}>
-          {subTree}
-        </TreeView>
-      );
-    }
-
-  });
-
-  return [mapped, containsViewing, containsChanged];
-}
