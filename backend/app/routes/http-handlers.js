@@ -1,17 +1,33 @@
 "use strict";
 
 var promisify = require('promisify-node'),
-    GitHub = require('github-api'),
+    GitHub = require('github'),
     Boom = require('boom');
 
-var Credentials = require('../config/gitignore.credentials');
+var credentials = require('../config/gitignore.credentials');
 
 
-var github = new GitHub(Credentials.gitHub);
+var github = new GitHub({
+  // required
+  version: "3.0.0",
+  // optional
+  protocol: "https",
+  host: "api.github.com",
+  timeout: 5000,
+  headers: {
+    "user-agent": "AdamStone/Codewalk"
+  }
+});
+
+github.authenticate(credentials.gitHub);
+
+var api = {
+  repos: promisify(github.repos),
+  gitdata: promisify(github.gitdata)
+};
 
 
 module.exports = {
-
 
   // COMMITS
 
@@ -20,19 +36,66 @@ module.exports = {
         repoName = request.params.repo,
         branch = request.params.branch;
 
-    var repo = github.getRepo(owner, repoName);
-    repo = promisify(repo);
+    var options = {
+      user: owner,
+      repo: repoName,
+      sha: branch || 'master',
+      per_page: 100
+    };
 
-    // default to master branch
-    branch = branch ? branch : 'master';
+    // use promises to handle multiple pages
+    var promiseChain,
+        allCommits = [];
 
-    repo.getCommits(branch)
-      .then(function(commits) {
-        // make oldest come first
-        commits.reverse();
-        return reply(commits);
-      }, errorHandler.bind({reply: reply}))
-      .done();
+    // predefine API call success handler
+    var handleCommits = function(commits) {
+
+      // save commits from this call
+      allCommits = allCommits.concat(commits);
+
+      // if link header present ...
+      var link = commits.meta.link;
+      if (link) {
+
+        // with rel="next" ...
+        var next = link.match(/<.*>; rel="next"/);
+        if (next) {
+
+          // then more commits are on the next page ...
+          var nextPage = parseInt(
+            next[0].match(/(?:\?|&)page=([0-9]+)/)[1]
+          );
+
+          // so append another link to the promise chain ...
+          promiseChain = promiseChain
+            .then(handleCommits, function(err) {
+              return reply(boom(err));
+            });
+
+          // and GET next page and return Promise
+          options.page = nextPage;
+          return api.repos.getCommits(options);
+        }
+      }
+
+      // else no more pages, so append .done()
+      promiseChain = promiseChain
+        .done(function() {
+          // make oldest come first
+          allCommits.reverse();
+          return reply(allCommits);
+        });
+
+      // and finish
+      return true;
+    };
+
+
+    // START chain execution
+    promiseChain = api.repos.getCommits(options)
+      .then(handleCommits, function(err) {
+        return reply(boom(err));
+      });
   },
 
 
@@ -43,13 +106,17 @@ module.exports = {
         repoName = request.params.repo,
         sha = request.params.sha;
 
-    var repo = github.getRepo(owner, repoName);
-    repo = promisify(repo);
+    var options = {
+      user: owner,
+      repo: repoName,
+      sha: sha,
+      recursive: true
+    };
 
     var objs = {};
 
-    repo.getTree(sha + '?recursive=true')
-      .then(function(tree) {
+    api.gitdata.getTree(options)
+      .then(function(result) {
 
         // find children of subtrees by using
         // paths to rebuild file system
@@ -62,7 +129,7 @@ module.exports = {
         var path, folders, currentDir,
             trees = [];
 
-        tree.forEach(function(item) {
+        result.tree.forEach(function(item) {
 
           // build directory structure from blob paths
           if (item.type === "blob") {
@@ -87,7 +154,6 @@ module.exports = {
 
             // store object
             objs[item.sha] = item;
-
           }
 
           // put trees into their own array
@@ -141,7 +207,9 @@ module.exports = {
           fileSystem: fileSystem,
           objs: objs
         });
-      }, errorHandler.bind({reply: reply}))
+      }, function(err) {
+        return reply(boom(err));
+      })
       .done();
   },
 
@@ -153,13 +221,21 @@ module.exports = {
         repoName = request.params.repo,
         sha = request.params.sha;
 
-    var repo = github.getRepo(owner, repoName);
-    repo = promisify(repo);
+    var options = {
+      user: owner,
+      repo: repoName,
+      sha: sha,
+      headers: {
+        Accept: 'application/vnd.github.v3.raw'
+      }
+    };
 
-    repo.getBlob(sha)
+    api.gitdata.getBlob(options)
       .then(function(content) {
         return reply(content);
-      }, errorHandler.bind({reply: reply}))
+      }, function(err) {
+        return reply(boom(err));
+      })
       .done();
   },
 
@@ -172,13 +248,19 @@ module.exports = {
         baseSha = request.params.baseSha,
         headSha = request.params.headSha;
 
-    var repo = github.getRepo(owner, repoName);
-    repo = promisify(repo);
+    var options = {
+      user: owner,
+      repo: repoName,
+      base: baseSha,
+      head: headSha
+    };
 
-    repo.compare(baseSha, headSha)
-      .then(function(diff) {
-        return reply(diff.files);
-      }, errorHandler.bind({reply: reply}))
+    api.repos.compareCommits(options)
+      .then(function(result) {
+        return reply(result.files);
+      }, function(err) {
+        return reply(boom(err));
+      })
       .done();
   }
 };
@@ -200,17 +282,13 @@ function getChildrenSha(currentDir) {
 }
 
 
-function errorHandler(err) {
-  if (err && err.error === 404) {
-    return this.reply(
-      Boom.notFound(
+function boom(err) {
+  if (err.error === 404) {
+    return Boom.notFound(
         "The requested repo could not be found"
-      )
     );
   }
-  if (err) {
-    return this.reply(
-      Boom.badImplementation()
-    );
+  else {
+    return Boom.badImplementation();
   }
 }
