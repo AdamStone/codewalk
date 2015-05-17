@@ -12,7 +12,8 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      input: ''
+      input: 'https://github.com/',
+      hint: ''
     };
   },
 
@@ -20,6 +21,7 @@ module.exports = React.createClass({
   submit: function(e) {
     e.preventDefault();
 
+    // match ^full-url$
     var matched = this.state.input.match(
       /^https:\/\/github.com\/(\w[\w-]+)\/(\w[\w-]+)\/?$/
     );
@@ -34,20 +36,37 @@ module.exports = React.createClass({
       this.context.router.transitionTo('repo', params);
     }
     else {
-      // TODO display hint
+      this.setState({
+        hint: (
+          <div className="hint">
+            <p>The URL must be of the form</p>
+            <pre>https://github.com/owner/repo</pre>
+          </div>
+        )
+      });
     }
   },
 
 
   changed: function(e) {
 
-    this.setState({
-      input: e.target.value
-    });
+    // match *(full-url)$ to handle pasting full url
+    // at the end of pre-filled domain
+    var valid = e.target.value.match(
+      /https:\/\/github.com\/(\w*[\w-]*)($|\/\w*[\w-]*$)/
+    );
+    console.log(valid);
+    if (valid) {
+
+      this.setState({
+        input: valid[0]
+      });
+    }
   },
 
 
   render: function() {
+    var hint = this.state.hint;
 
     return (
       <div className="landing-page container">
@@ -80,6 +99,8 @@ module.exports = React.createClass({
                        type="url"/>
                 <button type="submit">Walk</button>
             </form>
+
+            { hint || null }
 
           </div>
         </div>

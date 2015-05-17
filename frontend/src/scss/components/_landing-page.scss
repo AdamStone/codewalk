@@ -26,4 +26,14 @@
     font-size: 13px;
     border-radius: 0;
   }
+
+  .hint {
+    font-size: 2rem;
+    color: #f22;
+    margin-bottom: 2rem;
+
+    p, pre {
+      margin: 0;
+    }
+  }
 }
