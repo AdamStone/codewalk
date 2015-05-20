@@ -1,21 +1,20 @@
-jest.dontMock('../FileView.react.jsx');
+// global
+window._ = require('lodash');
+window.hljs = require('highlight.js');
 
-// globals
-_ = require('lodash');
-hljs = require('highlight.js');
-
-var React, TestUtils, Component, FileView, ViewActions,
+var expect, React, TestUtils, Component, FileView, ViewActions,
     filename, blob, commit, code, innerHtml, Encoder, encoder,
-    RepoStore, repo;
+    RepoStore, repo, spy;
 
 describe('FileView', function() {
 
   beforeEach(function() {
+    expect = require('expect');
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../FileView.react.jsx');
     ViewActions = require('../../actions/ViewActions');
-    RepoStore = require('../../stores/RepoStore');
+    RepoStore = require('../../stores/__mocks__/RepoStore');
     Encoder = require('node-html-encoder').Encoder;
     encoder = new Encoder('entity');
     filename = 'somefile';
@@ -42,7 +41,7 @@ describe('FileView', function() {
         FileView, 'code');
 
       innerHtml = code.props.dangerouslySetInnerHTML.__html
-      expect(innerHtml).toBeTruthy();
+      expect(innerHtml).toExist();
     });
 
 
@@ -84,7 +83,7 @@ describe('FileView', function() {
         FileView, 'code');
 
       innerHtml = code.props.dangerouslySetInnerHTML.__html
-      expect(innerHtml).toMatch(
+      expect(innerHtml).toContain(
         encoder.htmlEncode(blob.content)
       );
     });
@@ -103,13 +102,15 @@ describe('FileView', function() {
                    blob={blob}/>
       );
 
+      spy = expect.spyOn(ViewActions, 'closeFileView');
+
       var event = document.createEvent("HTMLEvents");
       //    initEvent(type, bubbles, cancalable)
       event.initEvent("keydown", false, true);
       event.keyCode = 27;
       document.dispatchEvent(event);
 
-      expect(ViewActions.closeFileView).toBeCalled();
+      expect(spy).toHaveBeenCalled();
     });
 
 
@@ -130,9 +131,11 @@ describe('FileView', function() {
         FileView, 'close-button'
       );
 
+      spy = expect.spyOn(ViewActions, 'closeFileView');
+
       TestUtils.Simulate.click(close);
 
-      expect(ViewActions.closeFileView).toBeCalled();
+      expect(spy).toHaveBeenCalled();
     });
 
 
@@ -167,4 +170,3 @@ describe('FileView', function() {
     });
 
 });
-

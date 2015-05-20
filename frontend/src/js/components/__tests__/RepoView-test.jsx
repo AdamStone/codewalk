@@ -1,19 +1,17 @@
-jest.dontMock('../RepoView.react.jsx');
-jest.dontMock('../../utils/mockRouter.jsx');
+"use strict";
 
-// globals
-_ = require('lodash');
-
-var React, TestUtils, Component, RepoView,
-    Router, App, RepoStore, ViewStore, mockRouter;
+var expect, React, TestUtils, Component, RepoView, Router,
+    App, RepoStore, MockRepoStore, ViewStore, mockRouter, spy;
 
 describe('RepoView', function() {
 
   beforeEach(function() {
+    expect = require('expect');
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../RepoView.react.jsx');
     RepoStore = require('../../stores/RepoStore');
+    MockRepoStore = require('../../stores/__mocks__/RepoStore');
     ViewStore = require('../../stores/ViewStore');
     mockRouter = require('../../utils/mockRouter.jsx');
   });
@@ -34,16 +32,15 @@ describe('RepoView', function() {
         }
       });
 
+      spy = expect.spyOn(RepoStore, 'getCommits');
+      spy.calls = [];
+
       TestUtils.renderIntoDocument(<RepoView/>);
 
-      expect(RepoStore.getCommits.mock.calls[0][0])
-        .toBe('TestOwner');
-      expect(RepoStore.getCommits.mock.calls[0][1])
-        .toBe('jest-test-repo');
+      expect(spy.calls[0].arguments).toEqual([
+        'TestOwner', 'jest-test-repo', 'master'
+      ]);
 
-      // defaults to master branch
-      expect(RepoStore.getCommits.mock.calls[0][2])
-        .toBe('master');
     });
 
 
@@ -63,10 +60,13 @@ describe('RepoView', function() {
         }
       });
 
+      spy = expect.spyOn(RepoStore, 'getCommits');
+      spy.calls = [];
+
       TestUtils.renderIntoDocument(<RepoView/>);
 
-      expect(RepoStore.getCommits.mock.calls[0][2])
-        .toBe('needsCommits');
+      expect(spy.calls[0].arguments[2]).toBe('needsCommits');
+
     });
 
 
@@ -86,9 +86,13 @@ describe('RepoView', function() {
         }
       });
 
+      spy = expect.spyOn(RepoStore, 'getTree');
+      RepoStore.get = MockRepoStore.get;
+
       TestUtils.renderIntoDocument(<RepoView/>);
 
-      expect(RepoStore.getTree).toBeCalled();
+      expect(spy).toHaveBeenCalled();
+
     });
 
 
@@ -97,12 +101,15 @@ describe('RepoView', function() {
 
     function() {
 
-      ViewStore.get.mockImplementation(function() {
+      ViewStore.get = function() {
         return {
           file: 'child blob sha',
-          checkedOut: 0
+          checkedOut: 0,
+          expanded: {}
         }
-      });
+      };
+
+      RepoStore.get = MockRepoStore.get;
 
       // simulate url /:owner/:repo
       RepoView = mockRouter(Component, {}, {
@@ -115,9 +122,13 @@ describe('RepoView', function() {
         }
       });
 
+      spy = expect.spyOn(RepoStore, 'getBlob');
+      spy.calls = [];
+
       TestUtils.renderIntoDocument(<RepoView/>);
 
-      expect(RepoStore.getBlob).toBeCalled();
+      expect(spy).toHaveBeenCalled();
+
     });
 
 });

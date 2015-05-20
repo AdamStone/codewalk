@@ -1,18 +1,16 @@
-jest.dontMock('../FileTree.react.jsx');
-jest.dontMock('../../utils/WalkerFactory');
+"use strict";
 
-// globals
-_ = require('lodash');
-
-var React, TestUtils, Component, FileTree, RepoStore,
-    ViewActions, repo, tree, div, folder, files, children;
+var expect, React, TestUtils, Component, FileTree, RepoStore,
+    ViewActions, repo, tree, div, folder, files, children,
+    nodeLabel, className, spy;
 
 describe('FileTree', function() {
   beforeEach(function() {
+    expect = require('expect');
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../FileTree.react.jsx');
-    RepoStore = require('../../stores/RepoStore');
+    RepoStore = require('../../stores/__mocks__/RepoStore');
     ViewActions = require('../../actions/ViewActions');
 
     repo = RepoStore.get()['TestOwner']['jest-test-repo'];
@@ -31,7 +29,7 @@ describe('FileTree', function() {
         .findRenderedDOMComponentWithTag(
           FileTree, 'div');
 
-      expect(div.props.children).toBeNull();
+      expect(div.props.children).toNotExist();
     });
 
 
@@ -77,7 +75,7 @@ describe('FileTree', function() {
           FileTree, 'file-tree');
 
       children = div.props.children;
-      var className = children[0]._store.props.className;
+      className = children[0]._store.props.className;
 
       expect(className.split(' '))
         .toContain('viewing');
@@ -102,8 +100,8 @@ describe('FileTree', function() {
           FileTree, 'file-tree');
 
       children = div.props.children;
-      var nodeLabel = children[1]._store.props.nodeLabel,
-          className = nodeLabel._store.props.className;
+      nodeLabel = children[1]._store.props.nodeLabel;
+      className = nodeLabel._store.props.className;
 
       expect(className.split(' '))
         .toContain('viewing');
@@ -121,14 +119,16 @@ describe('FileTree', function() {
                      repo={repo}/>
         );
 
-        var folder = TestUtils.findRenderedDOMComponentWithClass(
+        folder = TestUtils.findRenderedDOMComponentWithClass(
           FileTree, 'folder'
         );
 
+        spy = expect.spyOn(ViewActions, 'toggleFolder');
+
         TestUtils.Simulate.click(folder);
 
-        expect(ViewActions.toggleFolder.mock.calls[0][0])
-          .toBe('child tree sha');
+        expect(spy.calls[0].arguments)
+          .toEqual(['child tree sha']);
       });
 
 
@@ -143,7 +143,7 @@ describe('FileTree', function() {
                      repo={repo}/>
         );
 
-        var folder = TestUtils.findRenderedDOMComponentWithClass(
+        folder = TestUtils.findRenderedDOMComponentWithClass(
           FileTree, 'folder'
         );
 

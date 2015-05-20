@@ -1,19 +1,17 @@
-jest.dontMock('../CommitList.react.jsx');
+"use strict";
 
-// globals
-_ = require('lodash');
-
-var React, TestUtils, Component, CommitList, ViewActions,
-    RepoStore, repo, commitSha, commits, listNodes;
+var expect, React, TestUtils, Component, CommitList, ViewActions,
+    RepoStore, repo, commitSha, commits, listNodes, spy;
 
 describe('CommitList', function() {
 
   beforeEach(function() {
+    expect = require('expect');
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../CommitList.react.jsx');
     ViewActions = require('../../actions/ViewActions');
-    RepoStore = require('../../stores/RepoStore');
+    RepoStore = require('../../stores/__mocks__/RepoStore');
 
     repo = RepoStore.get()['TestOwner']['jest-test-repo'];
     commitSha = repo.branches.hasCommits.commits;
@@ -67,9 +65,11 @@ describe('CommitList', function() {
       listNodes = TestUtils.scryRenderedDOMComponentsWithTag(
                                                 CommitList, 'li');
 
+      spy = expect.spyOn(ViewActions, 'checkout');
+
       TestUtils.Simulate.click(listNodes[1]);
 
-      expect(ViewActions.checkout).toBeCalled();
+      expect(spy.calls.length).toBe(1);
     });
 
 

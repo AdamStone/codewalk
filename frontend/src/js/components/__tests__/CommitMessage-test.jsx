@@ -1,15 +1,12 @@
-jest.dontMock('../CommitMessage.react.jsx');
+"use strict";
 
-// globals
-_ = require('lodash');
-
-var React, TestUtils, Component, CommitMessage,
-    markdown, rendered;
+var expect, React, TestUtils, Component, CommitMessage,
+    markdown, rendered, div, spy;
 
 describe('CommitMessage', function() {
 
   beforeEach(function() {
-
+    expect = require('expect'),
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
     Component = require('../CommitMessage.react.jsx');
