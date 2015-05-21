@@ -1,5 +1,58 @@
-nav {
+// base styling / med-large screens
+.navbar {
+
+  background-color: $navbar-bg-color;
+  font-size: 15px;
+
+  ul, li {
+    height: $navbar-height;
+    margin: 0;
+  }
+
   li {
     display: inline-block;
+    vertical-align: top;
+  }
+
+  a, span {
+    color: #ddd;
+    text-decoration: none;
+    padding: .8rem;
+    box-sizing: border-box;
+    display: inline-block;
+
+    &:hover {
+      background-color: #222;
+    }
+  }
+
+  .toggle-button {
+    display: none;
+  }
+}
+
+// small screens
+@media (max-width: $max-width-sm) {
+
+  .navbar {
+
+    font-size: 20px;
+
+    ul, li {
+      height: $navbar-height-sm;
+    }
+
+    a, span {
+      padding: .7em;
+    }
+
+    .toggle-button {
+      display: inline-block;
+      font-size: 25px;
+      position: absolute;
+      right: 0;
+      color: #ddd;
+      cursor: pointer;
+    }
   }
 }

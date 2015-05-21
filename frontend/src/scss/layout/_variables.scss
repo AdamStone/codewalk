@@ -1,5 +1,16 @@
-$left-bar-bg: #ccc;
-$right-bar-bg: #222;
+// small screens
+$navbar-height-sm: 60px;
 
-$left-bar-width: 12em;
-$right-bar-width: 15em;
+// medium-large screens
+$navbar-height: 40px;
+
+$left-bar-width: 14em;
+$right-bar-width: 18em;
+
+// large screens
+$left-bar-width-lg: 18em;
+$right-bar-width-lg: 20em;
+
+
+// colors
+$navbar-bg-color: #080808;

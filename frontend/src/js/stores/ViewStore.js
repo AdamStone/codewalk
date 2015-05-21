@@ -16,7 +16,8 @@ var _getInitialState = function() {
   return {
     file: null,
     checkedOut: 0,
-    expanded: {}
+    expanded: {},
+    layout: Constants.View.COMMITS_LAYOUT
   };
 };
 
@@ -61,7 +62,8 @@ _dispatchToken = AppDispatcher.register(
         sha = data.sha,
         owner = data.owner,
         repoName = data.repoName,
-        commitIndex = data.commitIndex;
+        commitIndex = data.commitIndex,
+        layout = data.layout;
 
     var repo, commit, tree, changed;
     switch(action.actionType) {
@@ -99,6 +101,14 @@ _dispatchToken = AppDispatcher.register(
         changed = commit.changed;
 
         autoExpand(repo, tree, changed);
+        break;
+
+
+      case Constants.View.SET_LAYOUT:
+
+        // data: layout
+
+        _data.layout = layout;
         break;
 
 

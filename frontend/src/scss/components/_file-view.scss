@@ -1,16 +1,40 @@
 .file-view {
   height: 100%;
 
+  .filename {
+    @include pos(a, 0 0 null 0);
+    font-size: $filename-font-size;
+    padding: 0.5em;
+    color: #eee;
+    font-family: $font-family-monospace;
+    background-color: $filename-bg-color;
+    color: $filename-color;
+  }
+
+  .close-button {
+    position: absolute;
+    font-size: 1.1em;
+    top: 0;
+    right: 0;
+    padding: 0.5em .75em;
+    cursor: pointer;
+    color: $filename-color;
+  }
+
   pre {
+    @include pos(a, $filename-font-size*2.25 0 0 0);
     margin: 0;
-    height: 100%;
 
     code {
+      @include pos(a, 0 0 0 0);
       margin: 0;
-      min-height: 100%;
       box-sizing: border-box;
       border: none;
       padding: 1em;
+
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      border-radius: 0px;
 
       .unchanged {
         opacity: 0.6;

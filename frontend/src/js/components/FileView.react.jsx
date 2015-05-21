@@ -79,27 +79,16 @@ module.exports = React.createClass({
                      dangerouslySetInnerHTML={
                        {__html: content }}/>;
     return (
-      <div style={{overflow: 'auto',
-                   height: '100%'}}>
+      <div className="file-view">
+        <pre>
+          {code}
+        </pre>
+        <h1 className="filename">{filename}</h1>
 
         {/* CLOSE BUTTON */}
         <span className="fa fa-close close-button"
-              onClick={this.close}
-              style={{position: 'absolute',
-                      top: '0.5em',
-                      color: '#eee',
-                      textShadow: '0 0 1px #000',
-                      right: '1.5em',
-                      padding: '0.5em',
-                      zIndex: '100',
-                      cursor: 'pointer'}}/>
+              onClick={this.close}/>
 
-        {/* CONTENT */}
-        <div className="file-view">
-          <pre>
-            {code}
-          </pre>
-        </div>
       </div>
     );
   },

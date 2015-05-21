@@ -1,9 +1,14 @@
 "use strict";
 
-var React = require('react');
+var React = require('react'),
+    Router = require('react-router'),
+    Navigation = Router.Navigation,
+    Link = Router.Link;
 
 var RepoStore = require('../stores/RepoStore'),
     ViewStore = require('../stores/ViewStore'),
+    ViewActions = require('../actions/ViewActions'),
+    Constants = require('../constants/Constants'),
     CommitList = require('./CommitList.react.jsx'),
     CommitMessage = require('./CommitMessage.react.jsx'),
     FileTree = require('./FileTree.react.jsx'),
@@ -23,6 +28,8 @@ var stores = [RepoStore, ViewStore];
 
 module.exports = React.createClass({
 
+  mixins: [Navigation],
+
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -41,6 +48,14 @@ module.exports = React.createClass({
     for (var i=0; i<stores.length; i++) {
       stores[i].removeChangeListener(this._onChange);
     };
+  },
+
+  setCommitsLayout: function() {
+    ViewActions.setLayout(Constants.View.COMMITS_LAYOUT);
+  },
+
+  setCodeLayout: function() {
+    ViewActions.setLayout(Constants.View.CODE_LAYOUT);
   },
 
   render: function() {
@@ -120,7 +135,7 @@ module.exports = React.createClass({
         // optimistically show FileView to prevent flicker
         var filename = blob.path.split('/').reverse()[0];
         fileView = (
-          <div className="scroller">
+          <div className="scroller file-view-scroller">
             <FileView filename={filename}
                       commit={commit}
                       blob={blob}/>
@@ -135,32 +150,77 @@ module.exports = React.createClass({
       }
     }
 
+    // toggle layouts for small screens
+    var toggleButton;
+    if (this.state.view.layout === Constants.View.CODE_LAYOUT) {
+      toggleButton = (
+        <span className="fa fa-folder-open"
+              title="Close source code view"
+              onClick={this.setCommitsLayout}>
+        </span>
+      );
+    }
+    else {
+      toggleButton = (
+        <span className="fa fa-folder"
+              title="Open source code view"
+              onClick={this.setCodeLayout}>
+        </span>
+      );
+    }
+
     return (
       <div className="viewport">
-        <nav className="toolbar">
+
+        {/* NAVIGATION */}
+        <nav className="navbar">
+          <ul>
+
+            <li>
+              <Link to="app">
+                Codewalk
+              </Link>
+            </li>
+
+            <li className="toggle-button">
+              {toggleButton}
+            </li>
+
+          </ul>
         </nav>
 
+        {/* CONTENT */}
         <div className="content">
 
-          <div className="left-bar">
-          <CommitList repo={repo}
-                      commits={commits}
-                      checkedOut={checkedOut}/>
-          </div>
+          {/* Wrapper adjusts layout CSS */}
+          <div className={
+            this.state.view.layout === Constants.View.CODE_LAYOUT ?
+            "code-layout" : null}>
 
-          <div className="content-view">
-            <div className="scroller">
-              <CommitMessage markdown={message}/>
+            <div className="left-bar">
+              <CommitList repo={repo}
+                          commits={commits}
+                          checkedOut={checkedOut}/>
             </div>
-            {fileView}
-          </div>
 
-          <div className="right-bar">
-            <FileTree tree={tree}
-                      changed={changed}
-                      expanded={view.expanded}
-                      viewing={view.file}
-                      repo={repo}/>
+            <div className="content-view">
+              <div className="scroller">
+                <CommitMessage markdown={message}/>
+              </div>
+              {/*fileView*/}
+            </div>
+
+            <div className="right-bar">
+
+                <FileTree tree={tree}
+                          changed={changed}
+                          expanded={view.expanded}
+                          viewing={view.file}
+                          repo={repo}/>
+            </div>
+
+            {fileView}
+
           </div>
 
         </div>

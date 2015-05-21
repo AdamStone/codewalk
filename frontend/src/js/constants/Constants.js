@@ -14,7 +14,12 @@ module.exports = {
   View: keyMirror({
     VIEW_FILE: null,
     TOGGLE_FOLDER: null,
-    CHECKOUT: null
+    CHECKOUT: null,
+    SET_LAYOUT: null,
+
+    // mobile layout types
+    COMMITS_LAYOUT: null,
+    CODE_LAYOUT: null
   })
 
 };

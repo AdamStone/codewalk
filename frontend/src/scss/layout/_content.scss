@@ -1,26 +1,111 @@
+// BASE styling
 .content {
-  @include pos(a, 0 0 0 0);
+  @include pos(a, $navbar-height 0 0 0);
 
   .left-bar {
     @include pos(a, 0 null 0 0);
-    width: $left-bar-width;
-    background-color: $left-bar-bg;
     overflow: auto;
-  }
-
-  .content-view {
-    @include pos(a, 0 $right-bar-width 0 $left-bar-width);
   }
 
   .right-bar {
     @include pos(a, 0 0 0 null);
-    width: $right-bar-width;
-    background-color: $right-bar-bg;
   }
 
   .scroller {
-    height: 100%;
     overflow: auto;
     @include pos(a, 0 0 0 0);
+  }
+}
+
+
+// SMALL screens
+
+@media (max-width: $max-width-sm) {
+  .content {
+    @include pos(a, $navbar-height-sm 0 0 0);
+
+    // toggle codeView OFF
+    .left-bar {
+      width: $left-bar-width;
+    }
+    .content-view {
+      @include pos(a, 0 0 0 $left-bar-width);
+    }
+    .right-bar {
+      display: none;  // hide right bar
+    }
+
+    // toggle codeView ON
+    .code-layout {
+
+      .left-bar {
+        display: none;  // hide left bar
+      }
+      .content-view {
+        @include pos(a, 0 $right-bar-width 0 0);
+      }
+      .right-bar {
+        display: block;
+        width: $right-bar-width;
+      }
+
+    }
+  }
+}
+
+
+// MEDIUM screens
+
+@media (min-width: $min-width-med) {
+
+  .content {
+
+    // show left bar
+    .left-bar {
+      width: $left-bar-width;
+    }
+
+    // show between bars
+    .content-view {
+      @include pos(a, 0 $right-bar-width 0 $left-bar-width);
+    }
+
+    // show right bar
+    .right-bar {
+      width: $right-bar-width;
+    }
+
+    // cover all but right bar
+    .file-view-scroller {
+      @include pos(a, 0 $right-bar-width 0 0);
+    }
+  }
+}
+
+
+// LARGE screens
+
+@media (min-width: $min-width-lg) {
+  .content {
+
+    // show wide left bar
+    .left-bar {
+      width: $left-bar-width-lg;
+    }
+
+    // show between wide bars
+    .content-view {
+      @include pos(a, 0 $right-bar-width-lg 0 $left-bar-width-lg);
+    }
+
+    // show wide right bar
+    .right-bar {
+      width: $right-bar-width-lg;
+    }
+
+    // cover only middle
+    .file-view-scroller {
+      @include pos(a, 0 $right-bar-width-lg 0 $left-bar-width-lg);
+    }
   }
 }

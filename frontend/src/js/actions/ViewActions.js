@@ -52,6 +52,19 @@ module.exports = {
         sha: null
       }
     });
-  }
+  },
+
+
+
+  setLayout: function(layout) {
+
+    AppDispatcher.handleViewAction({
+      actionType: Constants.View.SET_LAYOUT,
+      data: {
+        layout: layout
+      }
+    });
+  },
+
 
 };
