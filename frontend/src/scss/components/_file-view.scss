@@ -5,15 +5,16 @@
     @include pos(a, 0 0 null 0);
     font-size: $filename-font-size;
     padding: 0.5em;
-    color: #eee;
     font-family: $font-family-monospace;
     background-color: $filename-bg-color;
     color: $filename-color;
+    box-sizing: border-box;
+    height: $filename-height;
   }
 
   .close-button {
     position: absolute;
-    font-size: 1.1em;
+    font-size: $filename-font-size;
     top: 0;
     right: 0;
     padding: 0.5em .75em;

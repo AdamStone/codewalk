@@ -1,3 +1,9 @@
+// MEDIA QUERIES
+$breakpoint-sm: 580px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+
+
 // small screens
 $navbar-height-sm: 60px;
 
@@ -5,7 +11,7 @@ $navbar-height-sm: 60px;
 $navbar-height: 40px;
 
 $left-bar-width: 14em;
-$right-bar-width: 18em;
+$right-bar-width: 16em;
 
 // large screens
 $left-bar-width-lg: 18em;
@@ -14,3 +20,7 @@ $right-bar-width-lg: 20em;
 
 // colors
 $navbar-bg-color: #080808;
+$navbar-bg-color-active: #222;
+$navbar-bg-color-hover: #222;
+$navbar-color: #ddd;
+

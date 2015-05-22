@@ -18,24 +18,97 @@
 }
 
 
-// SMALL screens
+// EXTRA SMALL screens
 
-@media (max-width: $max-width-sm) {
+@media (max-width: $breakpoint-sm) {
   .content {
     @include pos(a, $navbar-height-sm 0 0 0);
 
-    // toggle codeView OFF
-    .left-bar {
-      width: $left-bar-width;
-    }
-    .content-view {
-      @include pos(a, 0 0 0 $left-bar-width);
-    }
-    .right-bar {
-      display: none;  // hide right bar
+
+    // COMMITS layout
+
+    .commits-layout {
+
+      .left-bar {
+        @include pos(a, 0 0 0 0);  // fullscreen left bar
+      }
+      .content-view {
+        display: none;  // hide center
+      }
+      .right-bar {
+        display: none;  // hide right bar
+      }
+
     }
 
-    // toggle codeView ON
+
+    // MESSAGE layout
+
+    .message-layout {
+
+      .left-bar {
+        display: none;  // hide left bar
+      }
+      .content-view {
+        @include pos(a, 0 0 0 0); // fullscreen center
+      }
+      .right-bar {
+        display: none;  // hide right bar
+      }
+
+    }
+
+
+    // CODE layout
+
+    .code-layout {
+
+      .left-bar {
+        display: none;  // hide left bar
+      }
+      .content-view {
+        display: none;  // hide center
+      }
+      .right-bar {
+        @include pos(a, 0 0 0 0);  // fullscreen right bar
+      }
+
+    }
+
+  }
+}
+
+
+
+// SMALL screens
+
+@media (min-width: $breakpoint-sm + 1px) and
+       (max-width: $breakpoint-md) {
+
+  .content {
+    @include pos(a, $navbar-height-sm 0 0 0);
+
+
+
+
+    // COMMITS layout
+
+    .commits-layout, .message-layout {
+
+      .left-bar {
+        width: $left-bar-width;
+      }
+      .content-view {
+        @include pos(a, 0 0 0 $left-bar-width);
+      }
+      .right-bar {
+        display: none;  // hide right bar
+      }
+    }
+
+
+    // CODE layout
+
     .code-layout {
 
       .left-bar {
@@ -48,15 +121,16 @@
         display: block;
         width: $right-bar-width;
       }
-
     }
+
   }
 }
 
 
 // MEDIUM screens
 
-@media (min-width: $min-width-med) {
+@media (min-width: $breakpoint-md + 1px) and
+       (max-width: $breakpoint-lg) {
 
   .content {
 
@@ -85,7 +159,7 @@
 
 // LARGE screens
 
-@media (min-width: $min-width-lg) {
+@media (min-width: $breakpoint-lg + 1px) {
   .content {
 
     // show wide left bar

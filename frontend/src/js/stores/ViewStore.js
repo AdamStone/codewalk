@@ -93,6 +93,11 @@ _dispatchToken = AppDispatcher.register(
         _data.checkedOut = commitIndex;
         _data.file = null;
 
+
+        // Set layout to MESSAGE_LAYOUT
+
+        _data.layout = Constants.View.MESSAGE_LAYOUT;
+
         // Auto-expand folders containing changes
 
         repo = RepoStore.get()[owner][repoName];

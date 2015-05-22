@@ -50,12 +50,8 @@ module.exports = React.createClass({
     };
   },
 
-  setCommitsLayout: function() {
-    ViewActions.setLayout(Constants.View.COMMITS_LAYOUT);
-  },
-
-  setCodeLayout: function() {
-    ViewActions.setLayout(Constants.View.CODE_LAYOUT);
+  setLayout: function(layout) {
+    ViewActions.setLayout(layout);
   },
 
   render: function() {
@@ -150,24 +146,68 @@ module.exports = React.createClass({
       }
     }
 
-    // toggle layouts for small screens
-    var toggleButton;
-    if (this.state.view.layout === Constants.View.CODE_LAYOUT) {
-      toggleButton = (
-        <span className="fa fa-folder-open"
-              title="Close source code view"
-              onClick={this.setCommitsLayout}>
-        </span>
-      );
+
+    // Layout selection buttons for small screens
+
+    var layoutWrapper,
+        commitsButtonClass = 'fa fa-list commits-layout-button',
+        messageButtonClass = 'fa fa-book message-layout-button',
+        codeButtonClass = 'fa fa-code code-layout-button';
+
+    switch(this.state.view.layout) {
+
+      case Constants.View.COMMITS_LAYOUT:
+        layoutWrapper = 'commits-layout';
+        commitsButtonClass += ' active';
+        break;
+
+      case Constants.View.MESSAGE_LAYOUT:
+        layoutWrapper = 'message-layout';
+        messageButtonClass += ' active';
+        break;
+
+      case Constants.View.CODE_LAYOUT:
+        layoutWrapper = 'code-layout';
+        codeButtonClass += ' active';
+        break;
     }
-    else {
-      toggleButton = (
-        <span className="fa fa-folder"
-              title="Open source code view"
-              onClick={this.setCodeLayout}>
-        </span>
-      );
-    }
+
+    var layoutButtons = [
+      <span className={commitsButtonClass}
+            title="Show commit history"
+            onClick={
+              this.setLayout.bind(this,
+                Constants.View.COMMITS_LAYOUT)
+            }></span>,
+
+      <span className={messageButtonClass}
+            title="Show commit message for this commit"
+            onClick={
+              this.setLayout.bind(this,
+                Constants.View.MESSAGE_LAYOUT)
+            }></span>,
+
+      <span className={codeButtonClass}
+            title="Show source code for this commit"
+            onClick={
+              this.setLayout.bind(this,
+                Constants.View.CODE_LAYOUT)
+            }></span>
+    ];
+
+
+    layoutButtons = layoutButtons.map(
+      function(span, i) {
+        return (
+        <li key={i}
+            className="layout-button">
+          { span }
+        </li>
+        );
+      }
+    );
+
+
 
     return (
       <div className="viewport">
@@ -182,8 +222,10 @@ module.exports = React.createClass({
               </Link>
             </li>
 
-            <li className="toggle-button">
-              {toggleButton}
+            <li className="button-group">
+              <ul>
+                { layoutButtons }
+              </ul>
             </li>
 
           </ul>
@@ -192,10 +234,8 @@ module.exports = React.createClass({
         {/* CONTENT */}
         <div className="content">
 
-          {/* Wrapper adjusts layout CSS */}
-          <div className={
-            this.state.view.layout === Constants.View.CODE_LAYOUT ?
-            "code-layout" : null}>
+          {/* Wrapper selects layout CSS */}
+          <div className={layoutWrapper}>
 
             <div className="left-bar">
               <CommitList repo={repo}
@@ -207,7 +247,7 @@ module.exports = React.createClass({
               <div className="scroller">
                 <CommitMessage markdown={message}/>
               </div>
-              {/*fileView*/}
+
             </div>
 
             <div className="right-bar">

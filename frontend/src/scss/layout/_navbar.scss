@@ -1,4 +1,4 @@
-// base styling / med-large screens
+// BASE styling / MEDIUM-LARGE screens
 .navbar {
 
   background-color: $navbar-bg-color;
@@ -15,24 +15,26 @@
   }
 
   a, span {
-    color: #ddd;
+    color: $navbar-color;
     text-decoration: none;
     padding: .8rem;
     box-sizing: border-box;
     display: inline-block;
 
     &:hover {
-      background-color: #222;
+      background-color: $navbar-bg-color-hover;
     }
   }
 
-  .toggle-button {
+  .layout-button {
     display: none;
   }
 }
 
-// small screens
-@media (max-width: $max-width-sm) {
+
+// SMALL screens
+
+@media (max-width: $breakpoint-md) {
 
   .navbar {
 
@@ -46,13 +48,37 @@
       padding: .7em;
     }
 
-    .toggle-button {
-      display: inline-block;
-      font-size: 25px;
+    .button-group {
       position: absolute;
       right: 0;
-      color: #ddd;
+    }
+
+    .layout-button {
+      display: inline-block;
+      font-size: 25px;
+      color: $navbar-color;
       cursor: pointer;
+
+      & .active {
+        background-color: $navbar-bg-color-active;
+      }
+    }
+
+    .message-layout-button {
+      display: none;
+    }
+  }
+}
+
+
+// EXTRA SMALL screens
+
+@media (max-width: $breakpoint-sm) {
+
+  .navbar {
+
+    .message-layout-button {
+      display: inline-block;
     }
   }
 }

@@ -19,6 +19,7 @@ module.exports = {
 
     // mobile layout types
     COMMITS_LAYOUT: null,
+    MESSAGE_LAYOUT: null,
     CODE_LAYOUT: null
   })
 
