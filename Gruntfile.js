@@ -29,13 +29,20 @@ module.exports = function(grunt) {
     sass: {
       build: {
         src: 'frontend/src/scss/main.scss',
-        dest: 'frontend/src/css/styles.css'
+        dest: 'frontend/src/css/compiled.css'
+      }
+    },
+
+    autoprefixer: {
+      build: {
+        src: 'frontend/src/css/compiled.css',
+        dest: 'frontend/src/css/prefixed.css'
       }
     },
 
     cssmin: {
       build: {
-        src: ['frontend/src/css/styles.css',
+        src: ['frontend/src/css/prefixed.css',
               'frontend/src/css/atelier-lakeside.dark.css'],
         dest: 'frontend/public/css/styles.min.css'
       }
@@ -83,8 +90,13 @@ module.exports = function(grunt) {
         }
       },
 
-      css: {
-        files: 'frontend/src/**/*.css',
+      autoprefixer: {
+        files: 'frontend/src/css/compiled.css',
+        tasks: 'autoprefixer'
+      },
+
+      cssmin: {
+        files: 'frontend/src/css/prefixed.css',
         tasks: 'cssmin'
       },
 
@@ -148,10 +160,12 @@ module.exports = function(grunt) {
     'copy'
   ];
 
+  // batch load grunt-* modules
   var grunts = [
     'hapi',
     'sass',
-    'browserify'
+    'browserify',
+    'autoprefixer'
   ];
 
   for (var i=0; i < grunt_contribs.length; i++) {
@@ -165,6 +179,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'copy',
     'sass',
+    'autoprefixer',
     'cssmin',
     'browserify',
     'uglify'

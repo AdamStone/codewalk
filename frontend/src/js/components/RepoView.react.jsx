@@ -173,35 +173,35 @@ module.exports = React.createClass({
     }
 
     var layoutButtons = [
-      <span className={commitsButtonClass}
+      <button className={commitsButtonClass}
             title="Show commit history"
             onClick={
               this.setLayout.bind(this,
                 Constants.View.COMMITS_LAYOUT)
-            }></span>,
+            }></button>,
 
-      <span className={messageButtonClass}
+      <button className={messageButtonClass}
             title="Show commit message for this commit"
             onClick={
               this.setLayout.bind(this,
                 Constants.View.MESSAGE_LAYOUT)
-            }></span>,
+            }></button>,
 
-      <span className={codeButtonClass}
+      <button className={codeButtonClass}
             title="Show source code for this commit"
             onClick={
               this.setLayout.bind(this,
                 Constants.View.CODE_LAYOUT)
-            }></span>
+            }></button>
     ];
 
 
     layoutButtons = layoutButtons.map(
-      function(span, i) {
+      function(button, i) {
         return (
         <li key={i}
             className="layout-button">
-          { span }
+          { button }
         </li>
         );
       }

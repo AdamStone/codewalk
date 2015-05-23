@@ -5,10 +5,23 @@
   .left-bar {
     @include pos(a, 0 null 0 0);
     overflow: auto;
+    width: $left-bar-width;
+    transition: width $transition-speed $transition-mode,
+                left $transition-speed $transition-mode;
+  }
+
+  .content-view {
+    @include pos(a, 0 0 0 0);
+    transition: width $transition-speed $transition-mode,
+                left $transition-speed $transition-mode,
+                right $transition-speed $transition-mode;
   }
 
   .right-bar {
     @include pos(a, 0 0 0 null);
+    width: $right-bar-width;
+    transition: width $transition-speed $transition-mode,
+                right $transition-speed $transition-mode;
   }
 
   .scroller {
@@ -24,19 +37,23 @@
   .content {
     @include pos(a, $navbar-height-sm 0 0 0);
 
+    // make each column full-width
+    .left-bar, .content-view, .right-bar {
+      width: 100%;
+    }
+
 
     // COMMITS layout
 
     .commits-layout {
 
-      .left-bar {
-        @include pos(a, 0 0 0 0);  // fullscreen left bar
-      }
+      // move all but left bar off-screen
       .content-view {
-        display: none;  // hide center
+        right: -100%;
+        left: 100%;
       }
       .right-bar {
-        display: none;  // hide right bar
+        right: -200%;
       }
 
     }
@@ -46,14 +63,12 @@
 
     .message-layout {
 
+      // move both bars off-screen
       .left-bar {
-        display: none;  // hide left bar
-      }
-      .content-view {
-        @include pos(a, 0 0 0 0); // fullscreen center
+        left: -100%;
       }
       .right-bar {
-        display: none;  // hide right bar
+        right: -100%;
       }
 
     }
@@ -63,14 +78,13 @@
 
     .code-layout {
 
+      // move all but right bar off-screen
       .left-bar {
-        display: none;  // hide left bar
+        left: -200%;
       }
       .content-view {
-        display: none;  // hide center
-      }
-      .right-bar {
-        @include pos(a, 0 0 0 0);  // fullscreen right bar
+        left: -100%;
+        right: 100%;
       }
 
     }
@@ -89,20 +103,17 @@
     @include pos(a, $navbar-height-sm 0 0 0);
 
 
-
-
     // COMMITS layout
 
     .commits-layout, .message-layout {
 
-      .left-bar {
-        width: $left-bar-width;
-      }
+      // show left bar
       .content-view {
         @include pos(a, 0 0 0 $left-bar-width);
       }
+      // hide right bar
       .right-bar {
-        display: none;  // hide right bar
+        right: -$right-bar-width;
       }
     }
 
@@ -111,15 +122,13 @@
 
     .code-layout {
 
+      // hide left bar
       .left-bar {
-        display: none;  // hide left bar
+        left: -$left-bar-width;
       }
+      // show right bar
       .content-view {
         @include pos(a, 0 $right-bar-width 0 0);
-      }
-      .right-bar {
-        display: block;
-        width: $right-bar-width;
       }
     }
 
@@ -167,8 +176,8 @@
       width: $left-bar-width-lg;
     }
 
-    // show between wide bars
-    .content-view {
+    // show between wide bars, FileView covers cover only middle
+    .content-view, .file-view-scroller {
       @include pos(a, 0 $right-bar-width-lg 0 $left-bar-width-lg);
     }
 
@@ -177,9 +186,5 @@
       width: $right-bar-width-lg;
     }
 
-    // cover only middle
-    .file-view-scroller {
-      @include pos(a, 0 $right-bar-width-lg 0 $left-bar-width-lg);
-    }
   }
 }

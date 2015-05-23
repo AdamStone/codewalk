@@ -1,6 +1,17 @@
 // BASE styling / MEDIUM-LARGE screens
 .navbar {
 
+  button {
+    margin: 0;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+
+    &:focus {
+      border: 1px solid #07c;
+    }
+  }
+
   background-color: $navbar-bg-color;
   font-size: 15px;
 
@@ -14,7 +25,7 @@
     vertical-align: top;
   }
 
-  a, span {
+  a, button {
     color: $navbar-color;
     text-decoration: none;
     padding: .8rem;
@@ -44,7 +55,7 @@
       height: $navbar-height-sm;
     }
 
-    a, span {
+    a, button {
       padding: .7em;
     }
 
