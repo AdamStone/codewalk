@@ -1,14 +1,15 @@
 "use strict";
 
-var React = require('react'),
-    Router = require('react-router'),
-    Navigation = Router.Navigation,
-    Link = Router.Link;
+// node_modules
+var React = require('react');
 
+// flux
 var RepoStore = require('../stores/RepoStore'),
     ViewStore = require('../stores/ViewStore'),
-    ViewActions = require('../actions/ViewActions'),
-    Constants = require('../constants/Constants'),
+    Constants = require('../constants/Constants');
+
+// components
+var Navbar = require('./Navbar.react.jsx'),
     CommitList = require('./CommitList.react.jsx'),
     CommitMessage = require('./CommitMessage.react.jsx'),
     FileTree = require('./FileTree.react.jsx'),
@@ -27,8 +28,6 @@ var stores = [RepoStore, ViewStore];
 
 
 module.exports = React.createClass({
-
-  mixins: [Navigation],
 
   contextTypes: {
     router: React.PropTypes.func
@@ -50,9 +49,6 @@ module.exports = React.createClass({
     };
   },
 
-  setLayout: function(layout) {
-    ViewActions.setLayout(layout);
-  },
 
   render: function() {
     var repos = this.state.repos,
@@ -149,89 +145,28 @@ module.exports = React.createClass({
 
     // Layout selection buttons for small screens
 
-    var layoutWrapper,
-        commitsButtonClass = 'fa fa-list commits-layout-button',
-        messageButtonClass = 'fa fa-book message-layout-button',
-        codeButtonClass = 'fa fa-code code-layout-button';
+    var layoutWrapper;
 
     switch(this.state.view.layout) {
 
       case Constants.View.COMMITS_LAYOUT:
         layoutWrapper = 'commits-layout';
-        commitsButtonClass += ' active';
         break;
 
       case Constants.View.MESSAGE_LAYOUT:
         layoutWrapper = 'message-layout';
-        messageButtonClass += ' active';
         break;
 
       case Constants.View.CODE_LAYOUT:
         layoutWrapper = 'code-layout';
-        codeButtonClass += ' active';
         break;
     }
-
-    var layoutButtons = [
-      <button className={commitsButtonClass}
-            title="Show commit history"
-            onClick={
-              this.setLayout.bind(this,
-                Constants.View.COMMITS_LAYOUT)
-            }></button>,
-
-      <button className={messageButtonClass}
-            title="Show commit message for this commit"
-            onClick={
-              this.setLayout.bind(this,
-                Constants.View.MESSAGE_LAYOUT)
-            }></button>,
-
-      <button className={codeButtonClass}
-            title="Show source code for this commit"
-            onClick={
-              this.setLayout.bind(this,
-                Constants.View.CODE_LAYOUT)
-            }></button>
-    ];
-
-
-    layoutButtons = layoutButtons.map(
-      function(button, i) {
-        return (
-        <li key={i}
-            className="layout-button">
-          { button }
-        </li>
-        );
-      }
-    );
-
-
 
     return (
       <div className="viewport">
 
-        {/* NAVIGATION */}
-        <nav className="navbar">
-          <ul>
+        <Navbar view={this.state.view} repo={repo}/>
 
-            <li>
-              <Link to="app">
-                Codewalk
-              </Link>
-            </li>
-
-            <li className="button-group">
-              <ul>
-                { layoutButtons }
-              </ul>
-            </li>
-
-          </ul>
-        </nav>
-
-        {/* CONTENT */}
         <div className="content">
 
           {/* Wrapper selects layout CSS */}

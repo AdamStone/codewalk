@@ -1,6 +1,15 @@
 .commit-list {
   background-color: $commit-ul-bg;
 
+  .header {
+    font-size: 20px;
+    text-align: center;
+    margin: 0;
+    padding: 0.5em 0;
+    letter-spacing: 0.1px;
+    background-color: $commit-li-bg;
+  }
+
   li {
     padding: 0.5em;
     background-color: $commit-li-bg;

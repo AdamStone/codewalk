@@ -1,11 +1,21 @@
 .file-tree {
   @include pos(a, 0 0 0 0);
   @include unselectable();
-  padding: 0.75em;
+  padding: 1em;
+  padding-top: 0;
   background-color: $file-tree-bg;
   color: $file-tree-color;
   overflow: auto;
   font-size: 14px;
+
+  .header {
+    font-size: 20px;
+    text-align: center;
+    margin: 0;
+    padding: 0.5em 0;
+    letter-spacing: 0.1px;
+    color: $file-tree-color-changed;
+  }
 
   .file, .folder {
     cursor: pointer;

@@ -1,19 +1,12 @@
 // BASE styling / MEDIUM-LARGE screens
 .navbar {
 
-  button {
-    margin: 0;
-    height: 100%;
-    border: none;
-    border-radius: 0;
-
-    &:focus {
-      border: 1px solid #07c;
-    }
-  }
-
   background-color: $navbar-bg-color;
-  font-size: 15px;
+  font-size: $navbar-font-size;
+
+  .fa {
+    font-size: $navbar-font-size + 5px;
+  }
 
   ul, li {
     height: $navbar-height;
@@ -25,10 +18,23 @@
     vertical-align: top;
   }
 
+  a {
+    text-align: center;
+    padding: 8px;
+    span.fa {
+      vertical-align: text-top;
+    }
+  }
+
+  .layout-button-li {
+    display: none;
+  }
+
+
   a, button {
     color: $navbar-color;
     text-decoration: none;
-    padding: .8rem;
+
     box-sizing: border-box;
     display: inline-block;
 
@@ -36,35 +42,46 @@
       background-color: $navbar-bg-color-hover;
     }
   }
-
-  .layout-button {
-    display: none;
-  }
 }
 
 
-// SMALL screens
+
+
+
+// SMALL and EXTRA SMALL screens
 
 @media (max-width: $breakpoint-md) {
 
   .navbar {
 
-    font-size: 20px;
+    font-size: $navbar-font-size-sm;
+
+    .fa {
+      font-size: $navbar-font-size-sm + 5px;
+    }
 
     ul, li {
       height: $navbar-height-sm;
     }
 
-    a, button {
-      padding: .7em;
+    a {
+      padding: 0.7em;
     }
 
-    .button-group {
-      position: absolute;
-      right: 0;
+    button, .icon-a {
+      margin: 0;
+      padding: 15px;
+      height: $navbar-height-sm;
+      width: $navbar-height-sm;
+      border: none;
+      border-radius: 0;
+
+      &:focus {
+        border: 1px solid $focus-border-color;
+      }
     }
 
-    .layout-button {
+    .icon-li {
       display: inline-block;
       font-size: 25px;
       color: $navbar-color;
@@ -75,6 +92,11 @@
       }
     }
 
+    .button-group {
+      position: absolute;
+      right: 0;
+    }
+
     .message-layout-button {
       display: none;
     }
@@ -82,7 +104,8 @@
 }
 
 
-// EXTRA SMALL screens
+
+// EXTRA SMALL screens only
 
 @media (max-width: $breakpoint-sm) {
 

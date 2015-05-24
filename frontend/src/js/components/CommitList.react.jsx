@@ -58,9 +58,12 @@ module.exports = React.createClass({
     }
 
     return (
-      <ul className="commit-list">
-        {listItems}
-      </ul>
+      <div className="commit-list">
+        <h2 className="header">Commit History</h2>
+        <ul>
+          {listItems}
+        </ul>
+      </div>
     );
   }
 });
