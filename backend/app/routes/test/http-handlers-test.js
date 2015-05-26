@@ -1,4 +1,4 @@
-var expect, handlers, sha, key;
+var expect, handlers, constants, sha, key;
 
 
 describe('getCommits', function() {
@@ -6,11 +6,12 @@ describe('getCommits', function() {
   beforeEach(function() {
     expect = require('expect');
     handlers = require('../http-handlers');
+    constants = require('../../config/constants');
   });
 
 
 
-  it('returns API response commits [objs]',
+  it('returns API response commits { commits: [objs] }',
 
     function(done) {
 
@@ -21,13 +22,40 @@ describe('getCommits', function() {
         }
       };
 
-      handlers.getCommits(request, function(commits) {
+      handlers.getCommits(request, function(result) {
+
+        var commits = result.commits;
 
         expect(commits.length).toExist();
         commits.forEach(function(commit) {
           expect(commit.sha).toExist();
           expect(commit.commit).toExist();
         });
+
+        done();
+      });
+
+    });
+
+  it('returns { hitLimit: true } for too-large projects',
+
+    function(done) {
+
+      var request = {
+        params: {
+          owner: 'lisa-lab',
+          repo: 'pylearn2'
+        }
+      };
+
+      this.timeout = 15000;
+      handlers.getCommits(request, function(result) {
+
+        var hitLimit = result.hitLimit,
+            limit = (constants.github.PAGE_LIMIT *
+                     constants.github.PER_PAGE);
+
+        expect(hitLimit).toBe(limit);
 
         done();
       });

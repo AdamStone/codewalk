@@ -4,6 +4,7 @@ var EventEmitter = require('events').EventEmitter;
 
 var AppDispatcher = require('../dispatcher/AppDispatcher'),
     Constants = require('../constants/Constants'),
+    Strings = require('../constants/Strings'),
     RepoActions = require('../actions/RepoActions'),
     Server = require('../utils/ServerAPI');
 
@@ -78,10 +79,13 @@ var RepoStore = _.extend({
 
     if (!_pending.getCommits[args]) {
       _pending.getCommits[args] = true;
+
       Server.getCommits(owner, repoName, branch)
-        .then(function(commits) {
-          RepoActions.gotCommits(
-            owner, repoName, commits, branch);
+        .then(function(result) {
+          var commits = result.commits,
+              hitLimit = parseInt(result.hitLimit);
+          RepoActions.gotCommits(owner, repoName, branch,
+                                 commits, hitLimit);
         }, errorHandler)
         .done(function() {
           delete _pending.getCommits[args];
@@ -179,7 +183,7 @@ _dispatchToken = AppDispatcher.register(
 
       case Constants.Repo.GOT_COMMITS:
 
-        // data: owner, repoName, commits, branch
+        // data: owner, repoName, branch, commits, hitLimit
 
         target = _getOrInit(owner, repoName, branch);
         var commitSha = commits.map(
@@ -188,12 +192,22 @@ _dispatchToken = AppDispatcher.register(
           }
         );
         target.branch.commits = commitSha;
+
         commits.forEach(function(commit, index) {
           if (index === 0) {
             commit.commit.changed = 'all';
           }
           target.repo.objs[commit.sha] = commit;
         });
+
+        // set a warning message if commit limit was reached
+        var limit = data.hitLimit;
+        if (limit) {
+          target.repo.warnings = (target.repo.warnings || {});
+          target.repo.warnings.commitLimit = (
+            Strings.warnings.commitLimit(limit)
+          );
+        }
 
         break;
 

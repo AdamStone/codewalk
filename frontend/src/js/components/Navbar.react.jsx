@@ -79,6 +79,17 @@ module.exports = React.createClass({
       }
     );
 
+
+    // warnings
+    var warnings = [];
+    for (var key in repo.warnings) {
+      var message = repo.warnings[key];
+      warnings.push(
+      <li key={key}>{ message }</li>
+      );
+    }
+
+
     return (
       <nav className="navbar">
         <ul>
@@ -90,12 +101,27 @@ module.exports = React.createClass({
           </li>
 
           <li className="icon-li">
-            <a className="icon-a"
+            <a className="icon-container"
                title="View this repo on GitHub"
                href={"https://github.com/" + repo.owner + '/' + repo.name }>
               <span className="fa fa-github-alt"></span>
             </a>
           </li>
+
+        { warnings.length ?
+          <li className="icon-li">
+            <span className="icon-container warning"
+                  tabIndex="0">
+              <span className="fa fa-warning">
+              </span>
+              <ul className="dropdown">
+                { warnings }
+              </ul>
+            </span>
+          </li>
+
+          : null
+        }
 
           <li className="button-group">
             <ul>

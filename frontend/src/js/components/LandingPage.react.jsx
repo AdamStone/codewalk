@@ -55,7 +55,6 @@ module.exports = React.createClass({
     var valid = e.target.value.match(
       /https:\/\/github.com\/(\w*[\w-]*)($|\/\w*[\w-]*$)/
     );
-    console.log(valid);
     if (valid) {
 
       this.setState({

@@ -18,7 +18,7 @@ describe('FileTree', function() {
 
 
 
-  it('renders empty div if no commits',
+  it('renders only heading no commits',
 
     function() {
       FileTree = TestUtils.renderIntoDocument(
@@ -26,8 +26,8 @@ describe('FileTree', function() {
       );
 
       div = TestUtils
-        .findRenderedDOMComponentWithTag(
-          FileTree, 'div');
+        .findRenderedDOMComponentWithClass(
+          FileTree, 'filesystem');
 
       expect(div.props.children).toNotExist();
     });
@@ -47,7 +47,7 @@ describe('FileTree', function() {
 
       div = TestUtils
         .findRenderedDOMComponentWithClass(
-          FileTree, 'file-tree');
+          FileTree, 'filesystem');
 
       children = div.props.children;
 
@@ -72,7 +72,7 @@ describe('FileTree', function() {
 
       div = TestUtils
         .findRenderedDOMComponentWithClass(
-          FileTree, 'file-tree');
+          FileTree, 'filesystem');
 
       children = div.props.children;
       className = children[0]._store.props.className;
@@ -97,7 +97,7 @@ describe('FileTree', function() {
 
       div = TestUtils
         .findRenderedDOMComponentWithClass(
-          FileTree, 'file-tree');
+          FileTree, 'filesystem');
 
       children = div.props.children;
       nodeLabel = children[1]._store.props.nodeLabel;

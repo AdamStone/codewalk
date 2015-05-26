@@ -4,7 +4,8 @@ var promisify = require('promisify-node'),
     GitHub = require('github'),
     Boom = require('boom');
 
-var credentials = require('../config/gitignore.credentials');
+var credentials = require('../config/gitignore.credentials'),
+    constants = require('../config/constants');
 
 
 var github = new GitHub({
@@ -13,7 +14,7 @@ var github = new GitHub({
   // optional
   protocol: "https",
   host: "api.github.com",
-  timeout: 5000,
+  timeout: constants.github.TIMEOUT,
   headers: {
     "user-agent": "AdamStone/Codewalk"
   }
@@ -40,7 +41,7 @@ module.exports = {
       user: owner,
       repo: repoName,
       sha: branch || 'master',
-      per_page: 100
+      per_page: constants.github.PER_PAGE
     };
 
     // use promises to handle multiple pages
@@ -66,15 +67,37 @@ module.exports = {
             next[0].match(/(?:\?|&)page=([0-9]+)/)[1]
           );
 
-          // so append another link to the promise chain ...
-          promiseChain = promiseChain
-            .then(handleCommits, function(err) {
-              return reply(boom(err));
-            });
+          // if not over the page limit ...
+          if (nextPage <= constants.github.PAGE_LIMIT) {
 
-          // and GET next page and return Promise
-          options.page = nextPage;
-          return api.repos.getCommits(options);
+            // append another link to the promise chain ...
+            promiseChain = promiseChain
+              .then(handleCommits, function(err) {
+                return reply(boom(err));
+              });
+
+            // and GET next page and return Promise
+            options.page = nextPage;
+            return api.repos.getCommits(options);
+          }
+
+          // else page limit reached, so append .done()
+          else {
+            promiseChain = promiseChain
+              .done(function() {
+                // make oldest come first
+                allCommits.reverse();
+                var commitLimit = (constants.github.PER_PAGE *
+                                   constants.github.PAGE_LIMIT);
+                return reply({
+                  commits: allCommits,
+                  hitLimit: commitLimit
+                });
+              });
+
+            // and finish
+            return true;
+          }
         }
       }
 
@@ -83,8 +106,11 @@ module.exports = {
         .done(function() {
           // make oldest come first
           allCommits.reverse();
-          return reply(allCommits);
-        });
+            return reply({
+              commits: allCommits,
+              hitLimit: false
+            });
+          });
 
       // and finish
       return true;

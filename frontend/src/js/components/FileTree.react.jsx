@@ -128,7 +128,9 @@ module.exports = React.createClass({
     return (
       <div className="file-tree">
         <h2 className="header">Source code</h2>
-        {treeView}
+        <div className="filesystem">
+          {treeView}
+        </div>
       </div>
     );
   }

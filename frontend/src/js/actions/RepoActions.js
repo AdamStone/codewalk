@@ -5,10 +5,8 @@ var AppDispatcher = require('../dispatcher/AppDispatcher'),
 
 module.exports = {
 
-  gotCommits: function(owner, repoName, commits, branch) {
-
-    branch = typeof branch !== 'undefined' ?
-                        branch : 'master';
+  gotCommits: function(owner, repoName, branch,
+                       commits, hitLimit) {
 
     AppDispatcher.handleServerAction({
       actionType: Constants.Repo.GOT_COMMITS,
@@ -16,6 +14,7 @@ module.exports = {
         owner: owner,
         repoName: repoName,
         commits: commits,
+        hitLimit: hitLimit,
         branch: branch
       }
     });

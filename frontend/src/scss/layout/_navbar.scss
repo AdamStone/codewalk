@@ -6,6 +6,8 @@
 
   .fa {
     font-size: $navbar-font-size + 5px;
+    vertical-align: top;
+    line-height: $navbar-height;
   }
 
   ul, li {
@@ -18,30 +20,74 @@
     vertical-align: top;
   }
 
-  a {
-    text-align: center;
-    padding: 8px;
-    span.fa {
-      vertical-align: text-top;
-    }
-  }
-
   .layout-button-li {
     display: none;
   }
 
 
-  a, button {
+  a, button, .icon-container {
+    margin: 0;
+    border: none;
+    border-radius: 0;
     color: $navbar-color;
     text-decoration: none;
-
+    text-align: center;
     box-sizing: border-box;
     display: inline-block;
+
+    line-height: $navbar-height;
+    vertical-align: top;
+    padding: 0 10px;
+    height: $navbar-height;
 
     &:hover {
       background-color: $navbar-bg-color-hover;
     }
+
+    &:focus {
+      border: 1px solid $focus-border-color;
+    }
   }
+
+  .icon-container {
+    width: $navbar-height;
+  }
+
+  .warning {
+    color: $navbar-warning-color;
+
+    .dropdown {
+      position: fixed;
+      top: $navbar-height;
+      left: 0;
+      width: 100%;
+      height: auto;
+      background-color: $navbar-bg-color-active;
+      font-size: 16px;
+      z-index: 999;
+      visibility: hidden;
+      opacity: 0;
+
+      li {
+        display: block;
+        height: auto;
+        line-height: normal;
+        padding: 1em;
+      }
+
+      transition: visibility $transition-speed/2 $transition-mode,
+                  opacity    $transition-speed/2 $transition-mode;
+    }
+
+    &:hover, &:active, &:focus {
+      .dropdown {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+  }
+
 }
 
 
@@ -58,27 +104,17 @@
 
     .fa {
       font-size: $navbar-font-size-sm + 5px;
+      line-height: $navbar-height-sm;
     }
 
-    ul, li {
+    ul, li, a {
       height: $navbar-height-sm;
     }
 
-    a {
-      padding: 0.7em;
-    }
-
-    button, .icon-a {
-      margin: 0;
-      padding: 15px;
+    a, button, .icon-container {
+      padding: 0 15px;
       height: $navbar-height-sm;
-      width: $navbar-height-sm;
-      border: none;
-      border-radius: 0;
-
-      &:focus {
-        border: 1px solid $focus-border-color;
-      }
+      line-height: $navbar-height-sm;
     }
 
     .icon-li {
@@ -92,13 +128,22 @@
       }
     }
 
+    button, .icon-container {
+      width: $navbar-height-sm;
+    }
+
     .button-group {
       position: absolute;
       right: 0;
+      background-color: $navbar-bg-color;
     }
 
     .message-layout-button {
       display: none;
+    }
+
+    .warning .dropdown {
+      top: $navbar-height-sm;
     }
   }
 }
