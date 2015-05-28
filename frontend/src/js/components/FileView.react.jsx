@@ -42,48 +42,83 @@ module.exports = React.createClass({
   render: function () {
 
     var blob = this.props.blob,
-        commit = this.props.commit,
-        content = encoder.htmlEncode(
-          blob.content || ''
-        );
+        filename = this.props.filename,
+        commit = this.props.commit;
 
-    if (content) {
-      if (commit.changed === 'all') {
-        // first commit
-        content = markAll(content, 'changed');
-      }
-      else {
-        var diff = (commit.changed && commit.changed[blob.sha]),
-            patch = (diff && diff.patch);
+    var img = null,
+        content = '';
 
-        if (patch) {
-          content = applyPatch(patch, content);
+    // if filename with extension provided, get extension
+    var extension = null;
+    if (filename && filename.split('.').length > 1) {
+      extension = filename.split('.').reverse()[0];
+    }
+
+    // check if file is an image
+
+    var imageSet = {},
+        imageTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp'];
+
+    imageTypes.forEach(function(ext) {
+      imageSet[ext] = true;
+    })
+
+    if (extension in imageSet) {
+
+      // file is an image, display it rather than showing text
+
+      var imgSrc = ("data:image/" + extension +
+                    ";base64," + blob.content);
+      img = (
+        <div className="img-container">
+        <a href={imgSrc} target="_blank">
+          <img src={imgSrc} />
+          </a>
+        </div>
+      );
+    }
+    else {
+
+      // file is not an image
+
+      if (blob.content) {
+        content = encoder.htmlEncode(atob(blob.content));
+
+        if (commit.changed === 'all') {
+          // first commit
+          content = markAll(content, 'changed');
         }
         else {
-          content = markAll(content, 'unchanged');
+          var diff = (commit.changed && commit.changed[blob.sha]),
+              patch = (diff && diff.patch);
+
+          if (patch) {
+            content = applyPatch(patch, content);
+          }
+          else {
+            content = markAll(content, 'unchanged');
+          }
         }
       }
     }
 
-    var lang = null,
-        filename = this.props.filename;
 
-    // if filename with extension provided,
-    // set extension as class for higlight.js
-    if (filename && filename.split('.').length > 1) {
-      lang = filename.split('.').reverse()[0];
-    }
+    var code = (
+      <code ref="code"
+            className={extension}  // for higlight.js
+            dangerouslySetInnerHTML={{__html: content }}/>
+    );
 
-    var code = <code ref="code"
-                     className={lang}
-                     dangerouslySetInnerHTML={
-                       {__html: content }}/>;
+
     return (
       <div className="file-view">
         <pre>
           {code}
+          {img}
         </pre>
+
         <h1 className="filename">{filename}</h1>
+
 
         {/* CLOSE BUTTON */}
         <span className="fa fa-close close-button"

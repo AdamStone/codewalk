@@ -2,7 +2,7 @@
 window._ = require('lodash');
 window.hljs = require('highlight.js');
 
-var expect, React, TestUtils, Component, FileView, ViewActions,
+var expect, React, TestUtils, atob, Component, FileView, ViewActions,
     filename, blob, commit, code, innerHtml, Encoder, encoder,
     RepoStore, repo, spy;
 
@@ -12,6 +12,7 @@ describe('FileView', function() {
     expect = require('expect');
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
+    atob = require('atob');
     Component = require('../FileView.react.jsx');
     ViewActions = require('../../actions/ViewActions');
     RepoStore = require('../../stores/__mocks__/RepoStore');
@@ -23,6 +24,24 @@ describe('FileView', function() {
     commit = repo.objs['diffed commit sha'];
   });
 
+
+  it('renders image if blob is image file',
+
+    function() {
+
+      blob = repo.objs['image blob sha'];
+
+      FileView = TestUtils.renderIntoDocument(
+        <Component filename={filename + '.png'}
+                   commit={commit}
+                   blob={blob}/>
+      );
+
+      var img = TestUtils.findRenderedDOMComponentWithTag(
+        FileView, 'img');
+
+      expect(img).toExist();
+    });
 
 
   it('renders available blob content',
@@ -83,9 +102,8 @@ describe('FileView', function() {
         FileView, 'code');
 
       innerHtml = code.props.dangerouslySetInnerHTML.__html
-      expect(innerHtml).toContain(
-        encoder.htmlEncode(blob.content)
-      );
+      var decoded = encoder.htmlEncode(atob(blob.content))
+      expect(innerHtml).toContain(decoded);
     });
 
 

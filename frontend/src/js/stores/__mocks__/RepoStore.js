@@ -1,5 +1,7 @@
 "use strict";
 
+var btoa = require('btoa');
+
 module.exports = {
 
   get: function() {
@@ -70,12 +72,12 @@ module.exports = {
               type: 'blob',
               sha: 'content blob sha',
               path: 'content.blob',
-              content: 'Test content'
+              content: btoa('Test content')
             },
 
 
 
-            // DIFF TESTS
+            // FileView TESTS
             'diffed commit sha': {
               commit: {
                 message: 'commit message',
@@ -104,13 +106,19 @@ module.exports = {
               type: 'blob',
               sha: 'changed blob sha',
               path: 'changed.blob',
-              content: ['Line 1', 'Line 2'].join('\n')
+              content: btoa(['Line 1', 'Line 2'].join('\n'))
             },
             'bold blob sha': {
               type: 'blob',
               sha: 'bold blob sha',
               path: 'bold.blob',
-              content:  '<b>some bold content</b>'
+              content: btoa('<b>some bold content</b>')
+            },
+            'image blob sha': {
+              type: 'blob',
+              sha: 'bold blob sha',
+              path: 'bold.blob.png',
+              content: btoa('not really a PNG')
             }
 
           }

@@ -252,13 +252,13 @@ module.exports = {
       repo: repoName,
       sha: sha,
       headers: {
-        Accept: 'application/vnd.github.v3.raw'
+        Accept: 'application/vnd.github.v3+json'
       }
     };
 
     api.gitdata.getBlob(options)
-      .then(function(content) {
-        return reply(content);
+      .then(function(response) {
+        return reply(response.content);
       }, function(err) {
         return reply(boom(err));
       })

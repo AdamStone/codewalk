@@ -1,10 +1,13 @@
-var expect, handlers, constants, sha, key;
+var expect, atob, handlers, constants, sha, key;
 
 
 describe('getCommits', function() {
 
+  this.timeout(5000);
+
   beforeEach(function() {
     expect = require('expect');
+    atob = require('atob');
     handlers = require('../http-handlers');
     constants = require('../../config/constants');
   });
@@ -48,7 +51,6 @@ describe('getCommits', function() {
         }
       };
 
-      this.timeout = 15000;
       handlers.getCommits(request, function(result) {
 
         var hitLimit = result.hitLimit,
@@ -108,7 +110,7 @@ describe('getBlob', function() {
 
 
 
-  it('returns file content',
+  it('returns JSON with base64 content',
 
     function(done) {
 
@@ -121,7 +123,7 @@ describe('getBlob', function() {
       };
 
       handlers.getBlob(request, function(content) {
-        expect(content).toBe('node_modules');
+        expect(atob(content)).toBe('node_modules');
         done();
       });
 

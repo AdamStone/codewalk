@@ -44,4 +44,15 @@
       }
     }
   }
+
+  .img-container {
+
+    @include pos(a, 0 0 0 0);
+    text-align: center;
+    padding: 1em;
+
+    img {
+      max-width: 100%;
+    }
+  }
 }
