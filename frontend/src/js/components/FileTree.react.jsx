@@ -125,12 +125,24 @@ module.exports = React.createClass({
       treeView = walker.walk();
     }
 
+
+    // show spinner until commits load
+    var spinner = (
+      <div className="spinner-container">
+        <span className="fa fa-spin fa-spinner"></span>
+      </div>
+    );
+
+
     return (
       <div className="file-tree">
         <h2 className="header">Source code</h2>
         <div className="filesystem">
           {treeView}
         </div>
+        {tree ?
+          null : spinner
+        }
       </div>
     );
   }

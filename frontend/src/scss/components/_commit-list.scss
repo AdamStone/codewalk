@@ -1,5 +1,4 @@
 .commit-list {
-  background-color: $commit-ul-bg;
 
   .header {
     font-size: 20px;
@@ -7,7 +6,10 @@
     margin: 0;
     padding: 0.5em 0;
     letter-spacing: 0.1px;
-    background-color: $commit-li-bg;
+  }
+
+  ul {
+    background-color: $commit-ul-bg;
   }
 
   li {
@@ -23,6 +25,18 @@
 
     &.checked-out {
       background-color: $commit-li-checkout-bg;
+    }
+  }
+
+  .spinner-container {
+    @include pos(a, 50% 0 null 0);
+    font-size: 45px;
+    text-align: center;
+    color: $commit-li-spinner-color;
+    margin-top: -1em;
+
+    .fa {
+      vertical-align: middle;
     }
   }
 }

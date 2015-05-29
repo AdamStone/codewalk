@@ -73,4 +73,16 @@
     visibility: hidden;
   }
 
+  .spinner-container {
+    @include pos(a, 50% 0 null 0);
+    font-size: 45px;
+    text-align: center;
+    color: $file-tree-spinner-color;
+    margin-top: -1em;
+
+    .fa {
+      vertical-align: middle;
+    }
+  }
+
 }

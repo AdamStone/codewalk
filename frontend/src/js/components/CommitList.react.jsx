@@ -57,12 +57,23 @@ module.exports = React.createClass({
       }
     }
 
+    // show spinner until commits load
+    var spinner = (
+      <div className="spinner-container">
+        <span className="fa fa-spin fa-spinner"></span>
+      </div>
+    );
+
+
     return (
       <div className="commit-list">
         <h2 className="header">Commit History</h2>
         <ul>
           {listItems}
         </ul>
+        {listItems.length ?
+          null : spinner
+        }
       </div>
     );
   }
